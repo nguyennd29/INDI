@@ -1,0 +1,29 @@
+.step-container {
+  margin: 20px
+}
+
+.next-btn {
+  float: right;
+}
+
+.step-component-container {
+  margin: 20px;
+  display: flex;
+}
+
+.steps-action {
+  overflow: hidden;
+  margin-top: 30px
+}
+
+.hidden {
+  width: 0;
+  opacity: 0;
+  transition: all .25s ease;
+}
+
+.reveal {
+  opacity: 1;
+  width: 100%;
+  transition: all .25s ease;
+}
