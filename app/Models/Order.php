@@ -10,10 +10,18 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'userId',
-        'ownerId',
-        'tempUserName',
-        'tempUserPhone',
-        'fileId',
+        'user_id',
+        'store_id',
+        'user_name',
+        'user_phone',
+        'file_list',
+        'note',
+        'rating',
+        'comment',
+        'cost',
+        'status',
+        'canceled_at',
+        'printed_at',
+        'picked_at'
     ];
 }

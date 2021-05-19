@@ -7,15 +7,17 @@ class Header extends React.Component {
         return (
             <div>
                 <Menu mode="horizontal">
-                    <Menu.Item key="Home">
-                        INDI
-                    </Menu.Item>
-                    <Menu.Item key="Guide">
-                        Trợ giúp
-                    </Menu.Item>
-                    <Menu.Item key="Partner">
-                        Đối tác
-                    </Menu.Item>
+                        <Menu.Item key="Home">
+                            <Link to="/">
+                            INDI
+                            </Link>
+                        </Menu.Item>
+                    {/*<Menu.Item key="Guide">*/}
+                    {/*    Trợ giúp*/}
+                    {/*</Menu.Item>*/}
+                    {/*<Menu.Item key="Partner">*/}
+                    {/*    Đối tác*/}
+                    {/*</Menu.Item>*/}
                     <Menu.Item key="Login">
                         Đăng nhập
                     </Menu.Item>

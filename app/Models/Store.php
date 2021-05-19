@@ -15,10 +15,11 @@ class Store extends Model
         'password',
         'name',
         'phone',
-        'ownerID',
         'address',
         'description',
-        'price',
+        'services',
+        'logo_image',
+        'price_image'
     ];
 
     /**
