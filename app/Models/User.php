@@ -17,10 +17,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
+        'user_name',
         'password',
         'email',
         'phone',
+        'role'
     ];
 
     /**
@@ -32,4 +33,14 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function owner()
+    {
+        return $this->hasOne(Store::class, 'owner_id');
+    }
 }

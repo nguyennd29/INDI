@@ -1,5 +1,6 @@
 .step-container {
-  margin: 20px
+  margin: 20px;
+  margin-bottom: 50px;
 }
 
 .next-btn {
@@ -26,4 +27,12 @@
   opacity: 1;
   width: 100%;
   transition: all .25s ease;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 36px;
+  color: #464646;
+  font-weight: 500;
+  margin-bottom: 40px;
 }

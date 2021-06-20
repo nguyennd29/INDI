@@ -7,8 +7,11 @@
     {{-- CSRF Token --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'INDI') }}</title>
+    <title>INDI</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="icon" href="https://image.flaticon.com/icons/png/512/3569/3569998.png">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
 <div id="app"></div>

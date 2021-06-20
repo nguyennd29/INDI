@@ -1,0 +1,109 @@
+.search-store{
+  width: calc(100% - 48px);
+}
+
+.list-store{
+  margin-top: 30px;
+  display: grid;
+  //grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-gap: 0 40px;
+}
+
+.store-item{
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  transition: box-shadow .3s;
+
+}
+.store-item:hover {
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;}
+
+.store-item-image{
+  width: 20%;
+  margin-right: 30px;
+}
+
+.list-store-item{
+  margin: 20px;
+  padding: 30px;
+  display: flex;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.store-name{
+  text-transform: capitalize;
+  font-weight: 400;
+  font-size: 25px;
+  display: block;
+  color: black;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width:100%;
+}
+
+.store-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 12px 12px 0px 0px;
+}
+
+.store-info {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 200;
+  padding: 15px;
+  font-size: 18px;
+}
+
+.store-item-address, .store-item-phone {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width:100%;
+  color: grey;
+}
+
+.store-image-detail {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 12px 12px 12px 12px;
+}
+
+.store-info-detail {
+  margin-left: 50px;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.store-item-detail-address, .store-item-detail-phone, .store-item-detail-introduction {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width:100%;
+}
+
+.store-name-detail {
+  font-size: 32px;
+  color: #464646;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-bottom: 4px;
+  line-height: 43px;
+}
+.store-detail {
+  margin-top: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 200;
+  padding: 15px;
+  font-size: 18px;
+}

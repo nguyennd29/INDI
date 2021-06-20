@@ -11,33 +11,31 @@ class Store extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'email',
-        'password',
-        'name',
-        'phone',
+        'store_name',
         'address',
-        'description',
-        'services',
+        'introduction',
         'logo_image',
-        'price_image'
+        'owner_id'
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function extraServices()
+    {
+        return $this->hasMany(ExtraService::class);
+    }
+
+    public function printServices()
+    {
+        return $this->hasMany(PrintService::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

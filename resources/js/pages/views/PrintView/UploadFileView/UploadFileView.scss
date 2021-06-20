@@ -1,0 +1,27 @@
+.upload-file-view-container {
+  width: 800px;
+  .ant-upload-list-item-card-actions-btn {
+    opacity: 1 !important;
+  }
+}
+.user-info-container {
+  //width: 600px;
+  margin: auto;
+}
+
+.service-container {
+  //width: 600px;
+  //margin-left: 25%;
+}
+
+.service-item {
+  margin-top: 20px;
+}
+
+.extra-service, .note {
+  margin-top: 50px;
+}
+
+.input-num {
+  width: 60px;
+}

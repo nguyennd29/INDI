@@ -1,0 +1,28 @@
+.status-view-container{
+  width: 800px;
+  margin: auto;
+
+  .ant-list-item-meta-description {
+    color: black;
+  }
+
+  .file-item {
+    margin-bottom: 10px;
+  }
+
+  .cancel-button-container {
+    margin-top: 30px;
+    text-align: center;
+  }
+
+  .cancel-button {
+    border-radius: 10px;
+  }
+
+  .order-status {
+    font-size: 28px;
+    color: #464646;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+}

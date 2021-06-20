@@ -17,15 +17,17 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->string('user_id')->nullable();
             $table->string('store_id');
-            $table->string('user_name');
-            $table->string('user_phone');
-            $table->json('file_list');
+            $table->string('user_name')->nullable();
+            $table->string('user_phone')->nullable();
+
             $table->string('note')->nullable();
             $table->integer('rating')->nullable();
             $table->string('comment')->nullable();
+            $table->string('code')->nullable();
             $table->integer('cost')->nullable();
-            $table->string('status');
+            $table->string('status')->nullable();
 
+            $table->timestamp('received_at')->nullable();
             $table->timestamp('canceled_at')->nullable();
             $table->timestamp('printed_at')->nullable();
             $table->timestamp('picked_at')->nullable();
