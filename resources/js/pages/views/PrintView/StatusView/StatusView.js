@@ -14,10 +14,6 @@ class StatusView extends React.Component {
         };
     }
 
-    renderFile = (fileName) => {
-        return <a href='#'>{fileName}</a>
-    };
-
     getPrintOption = (item) => {
         return (
             <span>
@@ -30,10 +26,10 @@ class StatusView extends React.Component {
     getServiceType = () => {
         const {createdOrder} = this.props;
 
-        if (createdOrder.extraServices && createdOrder.extraServices.length > 2) {
-            const type = extraServices[0].pivot?.type;
+        if (createdOrder.extra_services?.length > 0 && createdOrder.files?.length > 1) {
+            const type = createdOrder.extra_services[0].pivot?.type;
 
-            return type === 'ALL' ? 'Gộp các file làm một' : 'Áp dụng từng file';
+            return type === 'ALL' ? ' - Gộp các file làm một' : ' - Áp dụng từng file';
         }
 
         return ('');
@@ -50,13 +46,16 @@ class StatusView extends React.Component {
 
         return (
             <div className="status-view-container">
+                <div className='order-code'>
+                    Đơn hàng: #{createdOrder.id}
+                </div>
                 <div className='order-status'>
                     Trạng thái: Đã Tiếp Nhận
                 </div>
                 <div className='order-code'>
-                    Mã đơn hàng: #{createdOrder.id}
+                    Khách hàng: {createdOrder.user_name + ' - ' + createdOrder.user_phone}
                 </div>
-                <Collapse defaultActiveKey={['1', '2']}>
+                <Collapse defaultActiveKey={['1', '2']} expandIconPosition='right'>
                     <Panel header={createdOrder.files.length + ' files'} key="1">
                         <List
                             itemLayout="horizontal"
@@ -71,41 +70,26 @@ class StatusView extends React.Component {
                                 </List.Item>
                             )}
                         />
-                        {/*<Card*/}
-                        {/*    size="small"*/}
-                        {/*    title={this.renderFile('DATN_Nguyen_Duy_Nguyen.pdf')}*/}
-                        {/*    className='file-item'*/}
-                        {/*>*/}
-                        {/*    <div>2 bộ - In nhanh đen trắng 2 mặt A4</div>*/}
-                        {/*</Card>*/}
-                        {/*<Card*/}
-                        {/*    size="small"*/}
-                        {/*    title={this.renderFile('DATN_Nguyen_Duy_Nguyen.pdf')}*/}
-                        {/*    className='file-item'*/}
-                        {/*>*/}
-                        {/*    <div>2 bộ - In nhanh đen trắng 2 mặt A4</div>*/}
-                        {/*</Card>*/}
-                        {/*<Card*/}
-                        {/*    size="small"*/}
-                        {/*    title={this.renderFile('DATN_Nguyen_Duy_Nguyen.pdf')}*/}
-                        {/*    className='file-item'*/}
-                        {/*>*/}
-                        {/*    <div>2 bộ - In nhanh đen trắng 2 mặt A4</div>*/}
-                        {/*</Card>*/}
-                    </Panel>
-                    <Panel header={createdOrder?.extra_services?.length + ' - ' + this.getServiceType()} key="2">
-                        <List
-                            itemLayout="horizontal"
-                            dataSource={createdOrder.files}
-                            renderItem={item => (
-                                <List.Item>
-                                    <List.Item.Meta
-                                        title={<div>Đóng bìa xanh chữ màu</div>}
-                                    />
-                                </List.Item>
-                            )}
-                        />
 
+                    </Panel>
+                    <Panel header={createdOrder?.extra_services?.length + ' dịch vụ khác' + this.getServiceType()} key="2">
+                        {
+                            createdOrder?.extra_services?.length > 0 ? (
+                                <List
+                                    itemLayout="horizontal"
+                                    dataSource={createdOrder?.extra_services}
+                                    renderItem={item => (
+                                        <List.Item>
+                                            <List.Item.Meta
+                                                title={<div>{item.service_name + ' - ' + item.price + 'đ/bộ'}</div>}
+                                            />
+                                        </List.Item>
+                                    )}
+                                />
+                            ) : (
+                                <div>Dập ghim mặc định</div>
+                            )
+                        }
                     </Panel>
                 </Collapse>
                 <div className='cancel-button-container'>

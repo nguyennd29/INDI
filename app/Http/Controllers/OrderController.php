@@ -11,6 +11,78 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    public function getOrdersByStore($store_id) {
+        $orders = Order::with('extraServices', 'files.printService')->where('store_id', $store_id)->get();
+
+        return response()->json($orders, 200);
+    }
+
+    public function receive($order_id) {
+        $order = Order::find($order_id);
+        if ($order && $order->status === 'CREATED') {
+            $order->status = 'RECEIVED';
+            $order->received_at = now();
+            $order->save();
+
+            return response()->json($order, 200);
+        }
+
+        return response()->json(['error' => 'Action Error'], 400);
+    }
+
+    public function process($order_id) {
+        $order = Order::find($order_id);
+        if ($order && $order->status === 'RECEIVED') {
+            $order->status = 'PROCESSING';
+//            $order->processed_at = now();
+            $order->save();
+
+            return response()->json($order, 200);
+        }
+
+        return response()->json(['error' => 'Action Error'], 400);
+    }
+
+    public function printed($order_id) {
+        $order = Order::find($order_id);
+        if ($order && $order->status === 'PROCESSING') {
+            $order->status = 'PRINTED';
+            $order->printed_at = now();
+            $order->save();
+
+            return response()->json($order, 200);
+        }
+
+        return response()->json(['error' => 'Action Error'], 400);
+    }
+
+    public function pick($order_id) {
+        $order = Order::find($order_id);
+        if ($order && $order->status === 'PRINTED') {
+            $order->status = 'PICKED';
+            $order->picked_at = now();
+            $order->save();
+
+            return response()->json($order, 200);
+        }
+
+        return response()->json(['error' => 'Action Error'], 400);
+    }
+
+    public function cancel($order_id) {
+        $order = Order::find($order_id);
+        if ($order) {
+            $order->status = 'CANCELED';
+            $order->canceled_at = now();
+            $order->save();
+
+            return response()->json($order, 200);
+        }
+
+        return response()->json(['error' => 'Action Error'], 400);
+    }
+
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -69,7 +141,6 @@ class OrderController extends Controller
                 'error' => $e,
                 'message' => 'Tạo cửa hàng thất bại'
             ], 400);
-
         }
 
     }

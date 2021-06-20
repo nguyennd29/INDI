@@ -1,3 +1,97 @@
+.manage-container {
+  .ant-collapse-content > .ant-collapse-content-box {
+    padding: 0px;
+    padding-left: 20px;
+  }
+
+  .created-order {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+    .ant-card-head {
+      background-color: lightsalmon;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 2px;
+      margin-right: -1px;
+      margin-left: -1px;
+    }
+  }
+
+  .received-order {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+    .ant-card-head {
+      background-color: lightpink;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 2px;
+      margin-right: -1px;
+      margin-left: -1px;
+    }
+  }
+
+  .processing-order {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+    .ant-card-head {
+      background-color: lightskyblue;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 2px;
+      margin-right: -1px;
+      margin-left: -1px;
+    }
+  }
+
+  .printed-order {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+    .ant-card-head {
+      background-color: lightseagreen;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 2px;
+      margin-right: -1px;
+      margin-left: -1px;
+    }
+  }
+
+
+
+  .ant-list-item-meta-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ant-list-item-meta-description {
+    color: darkslategray;
+  }
+
+  .ant-list {
+    padding: 10px;
+    border: solid 1px lightgray;
+  }
+
+  .statistic-card {
+    text-align: center;
+    margin: 30px;
+    margin-bottom: 50px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;  }
+
+  .oders-container {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+    .order-card-title {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+
+  }
+}
+
 .manage-page-title {
   text-align: center;
   font-size: 36px;
@@ -5,4 +99,31 @@
   font-weight: 500;
   margin-bottom: 40px;
   margin-top: 50px;
+}
+
+.extra-service-item {
+  margin-left: 25px;
+}
+
+.col-header {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+
+}
+
+.percent {
+  color: green;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.statistic-container {
+  .ant-card-head-title {
+    font-weight: 600;
+    font-size: 20px;
+
+  }
 }

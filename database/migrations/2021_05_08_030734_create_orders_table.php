@@ -26,8 +26,10 @@ class CreateOrdersTable extends Migration
             $table->string('code')->nullable();
             $table->integer('cost')->nullable();
             $table->string('status')->nullable();
+            $table->timestamp('due_at')->nullable();
 
             $table->timestamp('received_at')->nullable();
+            $table->timestamp('processed_at')->nullable();
             $table->timestamp('canceled_at')->nullable();
             $table->timestamp('printed_at')->nullable();
             $table->timestamp('picked_at')->nullable();

@@ -12,10 +12,9 @@ class Order extends Model
     const CREATED = 'CREATED';
     const RECEIVED = 'RECEIVED';
     const PROCESSING = 'PROCESSING';
-    const PRINTING_DONE = 'PRINTING_DONE';
+    const PRINTED = 'PRINTED';
     const PICKED = 'PICKED';
     const CANCELED = 'CANCELED';
-    const DENIED = 'DENIED';
 
     protected $fillable = [
         'user_id',
@@ -27,9 +26,10 @@ class Order extends Model
         'comment',
         'cost',
         'status',
+        'due_at',
         'received_at',
         'canceled_at',
-        'printing_done_at',
+        'printed_at',
         'picked_at'
     ];
 

@@ -93,7 +93,7 @@ class FileController extends Controller
 
         try {
             $file = $request->file('logo');
-            $fileName = time().'_'.$file->getClientOriginalName();
+            $fileName = $file->getClientOriginalName().'_'.time();
 
             $path = Storage::disk('public')->putFileAs(
                 'logos', $file, $fileName

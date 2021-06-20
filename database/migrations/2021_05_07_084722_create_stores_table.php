@@ -20,14 +20,7 @@ class CreateStoresTable extends Migration
             $table->string('address');
             $table->string('introduction')->nullable();
             $table->string('logo_image')->nullable();
-            $table->rememberToken();
             $table->timestamps();
-
-//            $table->string('phone');
-//            $table->string('email');
-//            $table->string('password');
-//            $table->string('owner_name');
-
         });
     }
 

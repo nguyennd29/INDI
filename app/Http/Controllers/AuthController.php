@@ -38,6 +38,14 @@ class AuthController extends Controller
             $request->session()->regenerate();
             $user = Auth::user();
 
+            if ($user->role !== 'store') {
+                return response()->json([
+                    'user' => $user,
+                    'message' => 'Đăng nhập thành công',
+                ], 200);
+            }
+
+            $user->load('store');
             return response()->json([
                 'user' => $user,
                 'message' => 'Đăng nhập thành công',
