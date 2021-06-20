@@ -313,7 +313,7 @@ class StoreRegister extends React.Component {
                                                         name={[name, 'price_per_page']}
                                                         fieldKey={[fieldKey, 'price_per_page']}
                                                     >
-                                                        <InputNumber min={0} placeholder="Giá"/> {'đ/1 tờ'}
+                                                        <InputNumber min={0} placeholder="Giá"/>
                                                     </Form.Item>
                                                 </Col>
                                                 <Col span={1}>
@@ -356,7 +356,7 @@ class StoreRegister extends React.Component {
                                                             name={[name, 'price']}
                                                             fieldKey={[fieldKey, 'price']}
                                                         >
-                                                            <InputNumber min={0} placeholder="Giá"/> {'đ/1 bộ'}
+                                                            <InputNumber min={0} placeholder="Giá"/>
                                                         </Form.Item>
                                                     </Col>
                                                     <Col span={1}>

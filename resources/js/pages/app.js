@@ -14,6 +14,7 @@ import './app.scss'
 import UserLogin from "./views/Auth/UserLogin/UserLogin";
 import history from "./components/history";
 import UserRegister from "./views/Auth/UserRegister/UserRegister";
+import ManageOrder from "./views/ManageOrder/ManageOrder";
 
 export default class App extends Component {
     render() {
@@ -31,6 +32,9 @@ export default class App extends Component {
                     </Route>
                     <Route path="/user-register">
                         <UserRegister />
+                    </Route>
+                    <Route path="/store/order">
+                        <ManageOrder />
                     </Route>
                     <Route path="/">
                         <Landing />

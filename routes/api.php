@@ -46,4 +46,8 @@ Route::post('/file','App\Http\Controllers\FileController@store')->name('upload')
 Route::post('/logo','App\Http\Controllers\FileController@storeLogo')->name('uploadLogo');
 Route::post('/file/delete','App\Http\Controllers\FileController@delete')->name('delete');
 
-Route::post('/order','App\Http\Controllers\OrderController@store')->name('create-order');
+Route::prefix('order')->name('order.')->group(function () {
+    Route::post('','App\Http\Controllers\OrderController@store')->name('create-order');
+    Route::get('{store_id}','App\Http\Controllers\OrderController@getOrdersByStore')->name('get-orders');
+});
+//Route::post('/order','App\Http\Controllers\OrderController@store')->name('create-order');

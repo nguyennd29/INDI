@@ -128,9 +128,8 @@ class UploadFileView extends React.Component {
                             key={['files', file_id, 'copy_num']}
                             label="Số lượng"
                             rules={[{ required: true, message: 'Xin chọn số lượng' }]}
-                            initialValue={1}
                         >
-                            <InputNumber className='input-num' min={1} defaultValue={1}/> {' bản'}
+                            <InputNumber className='input-num' min={1}/>
                         </Form.Item>
                     </Card>
                 </div>
@@ -151,6 +150,7 @@ class UploadFileView extends React.Component {
     };
 
     onFinish = (values) => {
+        console.log(values);
         const {selectedStore, nextStep, updatePropCreatedOrder} = this.props;
         let filesData = [];
         for (const [key, value] of Object.entries(values.files)) {
