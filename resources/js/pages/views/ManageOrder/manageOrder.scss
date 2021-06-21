@@ -6,6 +6,7 @@
 
   .created-order {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    margin-bottom: 10px;
 
     .ant-card-head {
       background-color: lightsalmon;
@@ -64,9 +65,7 @@
     white-space: nowrap;
   }
 
-  .ant-list-item-meta-description {
-    color: darkslategray;
-  }
+
 
   .ant-list {
     padding: 10px;
@@ -126,4 +125,23 @@
     font-size: 20px;
 
   }
+}
+
+.order-card-detail-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+.ant-modal-body {
+  .ant-card-head {
+    background-color: lightsalmon;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 2px;
+    margin-right: -1px;
+    margin-left: -1px;
+  }
+}
+
+.ant-list-item-meta-description {
+  color: darkslategray;
 }

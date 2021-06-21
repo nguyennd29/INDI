@@ -115,4 +115,17 @@ class FileController extends Controller
             ], 400);
         }
     }
+
+    public function download($file_id) {
+//        dd(1234);
+        $file = File::find($file_id);
+        if ($file) {
+            $path = public_path().'files'.$file->file_name;
+                dd(123);
+            $fileName = $file->order_id.'_'.$file->file_name;
+            return response()->download($path, $fileName);
+        }
+
+        return response()->json(['error' => 'Action Error'], 400);
+    }
 }

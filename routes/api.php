@@ -43,6 +43,8 @@ Route::prefix('auth')->name('auth.')->group(function () {
 });
 
 Route::post('/file','App\Http\Controllers\FileController@store')->name('upload');
+Route::post('/file/download/{file_id}','App\Http\Controllers\FileController@download')->name('download');
+
 Route::post('/logo','App\Http\Controllers\FileController@storeLogo')->name('uploadLogo');
 Route::post('/file/delete','App\Http\Controllers\FileController@delete')->name('delete');
 
