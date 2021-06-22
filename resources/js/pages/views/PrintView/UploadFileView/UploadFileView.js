@@ -2,7 +2,7 @@ import React from 'react';
 import {Link, Redirect} from 'react-router-dom'
 import Header from "../../../components/Header/Header";
 import { UploadOutlined } from '@ant-design/icons';
-import {Upload, Radio, Button, Form, Input, Card, notification, Select, InputNumber} from 'antd';
+import {DatePicker, Upload, Radio, Button, Form, Input, Card, notification, Select, InputNumber} from 'antd';
 
 import './UploadFileView.scss';
 
@@ -109,6 +109,7 @@ class UploadFileView extends React.Component {
                         title={originNode}
                         className='service-item'
                     >
+                        <div><div>Số trang:</div><div>30 trang</div></div>
                         <Form.Item
                             {...fileItemLayout}
                             name={['files', file_id, 'print_service_id']}
@@ -236,12 +237,19 @@ class UploadFileView extends React.Component {
                             <Input/>
                         </Form.Item>
                         <Form.Item
-                            label={"Số điện thoại"}
+                            label="Số điện thoại"
                             name="user_phone"
                             type="tel"
                             rules={[{required: true, message: 'Xin nhập số điện thoại'}]}
                         >
                             <Input/>
+                        </Form.Item>
+                        <Form.Item
+                            name="due_at"
+                            label="Thời gian nhận"
+                            rules={[{required: true, message: 'Xin nhập thời gian nhận tài liệu'}]}
+                        >
+                            <DatePicker showTime format="DD-MM-YYYY HH:mm" showNow={false}/>
                         </Form.Item>
                     </div>
                     <div className="service-container">
@@ -252,6 +260,7 @@ class UploadFileView extends React.Component {
                         >
                                 <Upload {...uploadProps}>
                                     <Button icon={<UploadOutlined />}>Upload</Button>
+                                    <div style={{fontStyle: 'italic'}}>Xin tải lên file định dạng pdf</div>
                                 </Upload>
                         </Form.Item>
                     </div>
@@ -280,10 +289,17 @@ class UploadFileView extends React.Component {
                         ) : null
                     }
                     <div className='note'>
+                        <Form.Item name="code" label="Mã khuyến mãi">
+                            <Input style={{width: 100}} />
+                            <div style={{fontStyle: 'italic'}}>Giảm 10.000đ cho đơn hàng từ 20.000đ</div>
+                        </Form.Item>
+                    </div>
+                    <div className='note'>
                         <Form.Item name="note" label="Ghi chú">
                             <Input.TextArea rows={2}/>
                         </Form.Item>
                     </div>
+                    <div style={{display: 'flex'}}><div>Giá tạm tính:</div><div>35.000đ</div> </div>
                     <Form.Item {...tailLayout}>
                         <Button type="primary" htmlType="submit" className="create-order-button">
                             Tạo đơn hàng

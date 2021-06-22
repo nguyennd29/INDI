@@ -6,6 +6,7 @@ use App\Models\ExtraService;
 use App\Models\File;
 use App\Models\Order;
 use App\Models\PrintService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -90,6 +91,7 @@ class OrderController extends Controller
             'user_name' => 'required',
             'user_phone' => 'required',
             'files' => 'required',
+            'due_at' => 'required',
         ]);
 
         DB::beginTransaction();
@@ -98,12 +100,18 @@ class OrderController extends Controller
                 'store_id',
                 'note',
                 'user_name',
-                'user_phone'
+                'user_phone',
+                'code'
             ]);
 
             $order = Order::create($orderData);
             if ($order) {
-                $order->update(['status' => Order::CREATED]);
+                $due = new Carbon($request->due_at);
+
+                $order->update([
+                    'status' => Order::CREATED,
+                    'due_at' => $due,
+                ]);
             }
 
             if ($request->user_id) {

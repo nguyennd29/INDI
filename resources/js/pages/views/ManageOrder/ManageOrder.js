@@ -103,27 +103,68 @@ class ManageOrder extends React.Component {
         });
     };
 
+    onPrinted = (order) => {
+        Modal.confirm({
+            title: 'Xác nhận in hoàn tất',
+            content: this.renderOrderDetail(order),
+            onOk: () => this.handleButtonRequest(order.id, 'printed'),
+            onCancel() {},
+            okText: 'Xác Nhận',
+            cancelText: 'Huỷ',
+            width: 600
+        });
+    };
+
+    onPick = (order) => {
+        Modal.confirm({
+            title: 'Xác nhận khách nhận hàng',
+            content: this.renderOrderDetail(order),
+            onOk: () => this.handleButtonRequest(order.id, 'pick'),
+            onCancel() {},
+            okText: 'Xác Nhận',
+            cancelText: 'Huỷ',
+            width: 600
+        });
+    };
+
+    renderSuccessMessage = (type) => {
+        switch (type) {
+            case 'cancel':
+                return 'Huỷ đơn hàng thành công';
+            case 'receive':
+                return 'Nhận đơn hàng thành công';
+            case 'process':
+                return 'Chuyển trạng thái thành công';
+            case 'printed':
+                return 'Chuyển trạng thái thành công';
+            case 'pick':
+                return 'Đơn hàng hoàn tất';
+            default:
+                return 'Error success message';
+        }
+    };
+
     handleButtonRequest = (orderId, type) => {
         const {store} = this.state;
         const getOrderList = (storeId) => this.getOrderList(storeId);
-
+        const renderSuccessMessage = (type) => this.renderSuccessMessage(type);
         axios.post(`/api/order/${type}/${orderId}`)
             .then(function (response) {
                 if (response?.status === 200) {
                     getOrderList(store?.id);
                     notification.success({
-                        message: 'Huỷ đơn hàng thành công!'
+                        message: renderSuccessMessage(type)
                     });
                 }
                 else {
                     notification.error({
-                        message: 'Huỷ đơn hàng thất bại!'
+                        message: 'Thao tác thất bại!'
                     });
                 }
             })
             .catch(function (error) {
                 notification.error({
-                    message: 'Huỷ đơn hàng thất bại!'
+                    message: 'Thao tác thất bại!'
                 });
             });
     };
@@ -142,11 +183,11 @@ class ManageOrder extends React.Component {
                             In
                         </Button>
                     ) : status === 'PROCESSING' ? (
-                        <Button type="primary" size='small' onClick={() => this.onReceive(order)}>
+                        <Button type="primary" size='small' onClick={() => this.onPrinted(order)}>
                             In Xong
                         </Button>
                     ) : status === 'PRINTED' ? (
-                        <Button type="primary" size='small' onClick={() => this.onReceive(order)}>
+                        <Button type="primary" size='small' onClick={() => this.onPick(order)}>
                             Hoàn tất
                         </Button>
                     ) : null
@@ -200,7 +241,7 @@ class ManageOrder extends React.Component {
                             <List.Item>
                                 <List.Item.Meta
                                     avatar={<Avatar shape='square' size='large' src="/images/pdf.png"/>}
-                                    title={<a style={{color: '#1890ff'}} href="#">{item.file_name}</a>}
+                                    title={<a style={{color: '#1890ff'}} href={item.url} target="_blank">{item.file_name}</a>}
                                     description={
                                         <div>
                                             <div>{item.copy_num + ' bản - 60 trang/bản'}</div>
@@ -252,8 +293,8 @@ class ManageOrder extends React.Component {
                                 <List.Item.Meta
                                     avatar={<Avatar shape='square' size='large' src="/images/pdf.png"/>}
                                     title={<div className='order-code' style={{display: 'flex', justifyContent: 'space-between'}}>
-                                        <a style={{color: '#1890ff'}} href={item.url}>{item.file_name}</a>
-                                        <a style={{color: '#1890ff'}} onClick={() => this.handleDownload(item.id)}>Download</a>
+                                        <a style={{color: '#1890ff'}} href={item.url} target="_blank">{item.file_name}</a>
+                                        <a style={{color: '#1890ff'}} href={item.url} target="_blank">Download</a>
                                     </div>}
                                     description={
                                         <div>
@@ -267,17 +308,6 @@ class ManageOrder extends React.Component {
                             </List.Item>
                         )}
                     />
-
-                {
-                    order?.extra_services?.length > 0 ? (
-                        order?.extra_services.map(item => (
-                            <div
-                                className='extra-service-item'>{'・' + item.service_name}</div>
-                        ))
-                    ) : (
-                        <div className='extra-service-item'>・Dập ghim mặc định</div>
-                    )
-                }
         </Card>
     );
 
@@ -305,7 +335,8 @@ class ManageOrder extends React.Component {
                             <List.Item>
                                 <List.Item.Meta
                                     avatar={<Avatar shape='square' size='large' src="/images/pdf.png"/>}
-                                    title={<a style={{color: '#1890ff'}} href="#">{item.file_name}</a>}
+                                    title={<a style={{color: '#1890ff'}} href={item.url} target="_blank">{item.file_name}</a>
+                                    }
                                     description={
                                         <div>
                                             <div>{item.copy_num + ' bản - 60 trang/bản'}</div>
