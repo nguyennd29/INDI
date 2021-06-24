@@ -36,6 +36,7 @@ class Footer extends React.Component {
     render() {
         return (
             <div className='footer'>
+                <div><a href='/'>INDI</a></div>
                 <div><a href='#'>Feedback</a></div>
             </div>
         );

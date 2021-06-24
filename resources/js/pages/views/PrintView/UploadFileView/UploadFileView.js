@@ -2,7 +2,21 @@ import React from 'react';
 import {Link, Redirect} from 'react-router-dom'
 import Header from "../../../components/Header/Header";
 import {UploadOutlined} from '@ant-design/icons';
-import {DatePicker, Upload, Radio, Button, Form, Input, Card, notification, Select, InputNumber, Row, Col} from 'antd';
+import {
+    DatePicker,
+    Upload,
+    Radio,
+    Button,
+    Form,
+    Input,
+    Card,
+    notification,
+    Select,
+    InputNumber,
+    Row,
+    Col,
+    Modal
+} from 'antd';
 import moment from 'moment';
 
 import './UploadFileView.scss';
@@ -385,7 +399,7 @@ class UploadFileView extends React.Component {
     };
 
     onFinish = (values) => {
-        const {fields, fileList} = this.state;
+        const {fields, fileList, promoCode} = this.state;
         const {selectedStore} = this.props;
         let filesData = [];
         for (const [key, value] of Object.entries(values.files)) {
@@ -407,6 +421,7 @@ class UploadFileView extends React.Component {
         const discount = this.getDiscount(totalFee);
 
         values.cost = totalFee - discount;
+        if (promoCode?.type !== '-1') values.code = promoCode.code;
 
         axios.post('/api/order', values)
             .then(function (response) {

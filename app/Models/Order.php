@@ -26,6 +26,7 @@ class Order extends Model
         'rating',
         'comment',
         'cost',
+        'code',
         'status',
         'due_at',
         'received_at',

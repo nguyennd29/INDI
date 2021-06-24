@@ -6,6 +6,7 @@ use App\Models\ExtraService;
 use App\Models\File;
 use App\Models\Order;
 use App\Models\PrintService;
+use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,7 @@ class OrderController extends Controller
     {
         $order = Order::find($order_id);
         if ($order) {
-            $order->load('extraServices', 'files.printService', 'store');
+            $order->load('extraServices', 'files.printService', 'store.owner');
 
             return response()->json($order, 200);
         }
@@ -128,6 +129,24 @@ class OrderController extends Controller
         }
     }
 
+    public function feedback(Request $request) {
+        $validated = $request->validate([
+            'order_id' => 'required',
+            'rate' => 'required'
+        ]);
+
+        $order = Order::find($request->order_id);
+        if ($order) {
+            $order->rating = $request->rate;
+            if ($request->feedback) $order->comment = $request->feedback;
+            $order->save();
+
+            return response()->json($order, 200);
+        }
+
+        return response()->json(['error' => 'Action Error'], 400);
+    }
+
     function generateBarcodeNumber() {
         $number = mt_rand(10000000, 99999999);
 
@@ -162,7 +181,8 @@ class OrderController extends Controller
                 'note',
                 'user_name',
                 'user_phone',
-                'code'
+                'code',
+                'cost'
             ]);
             $orderData['id'] = $this->generateBarcodeNumber();
             $order = Order::create($orderData);

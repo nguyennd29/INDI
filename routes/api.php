@@ -26,13 +26,6 @@ use Illuminate\Support\Facades\Route;
 //     Route::post('delete/{store}', 'StoreController@delete')->name('delete');
  });
 
-Route::prefix('orders')->name('orders.')->group(function () {
-    Route::get('', 'OrderController@index')->name('index');
-    Route::post('', 'OrderController@store')->name('store');
-    Route::get('{order}', 'OrderController@show')->name('show');
-    Route::post('{order}', 'OrderController@update')->name('update');
-    Route::post('delete/{order}', 'OrderController@delete')->name('delete');
-});
 
 Route::prefix('auth')->name('auth.')->group(function () {
 //    Route::get('', 'AuthController@index')->name('index');
@@ -57,6 +50,7 @@ Route::prefix('order')->name('order.')->group(function () {
     Route::post('process/{order_id}', 'App\Http\Controllers\OrderController@process')->name('process');
     Route::post('printed/{order_id}', 'App\Http\Controllers\OrderController@printed')->name('printed');
     Route::post('pick/{order_id}', 'App\Http\Controllers\OrderController@pick')->name('pick');
+    Route::post('feedback', 'App\Http\Controllers\OrderController@feedback')->name('feedback');
 
     Route::get('/order-store/{store_id}','App\Http\Controllers\OrderController@getOrdersByStore')->name('get-orders-by-store');
 });

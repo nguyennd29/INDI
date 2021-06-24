@@ -1,3 +1,6 @@
+//.step-component-container {
+//  min-height: 700px;
+//}
 .status-view-container{
   width: 800px;
   margin: auto;
@@ -23,6 +26,39 @@
     font-size: 28px;
     color: #464646;
     font-weight: 600;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
+
+  .order-info {
+    margin-bottom: 15px;
+  }
+
+  .order-info-item {
+    display: flex;
+  }
+
+  .order-code {
+    display: flex;
+  }
+
+  .order-info-item {
+    line-height: 1.75;
+  }
+
+  .order-item-title {
+    margin-right: 5px;
+    width: 100px;
+  }
+
+
+  .order-item-title2 {
+    margin-right: 5px;
+    width: 140px;
+  }
+
+  .order-item-main {
+    font-weight: 500;
+  }
+
+
 }
