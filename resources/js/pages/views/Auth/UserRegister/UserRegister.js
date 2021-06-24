@@ -4,7 +4,6 @@ import {PageHeader, Button, Menu, Form, Input, Upload, Row, Col, Select, notific
 import './userRegister.scss'
 import Header from "../../../components/Header/Header";
 import axios from "../../../../utils/axios";
-import history from "../../../components/history";
 
 const {Option} = Select;
 
@@ -29,7 +28,7 @@ class UserRegister extends React.Component {
             .then(function (response) {
                 if (response?.status === 200) {
                     openNotification();
-                    history.push('/user-login');
+                    window.location.assign('/user-login');
                 }
                 else {
                     notification.error({

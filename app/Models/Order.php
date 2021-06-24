@@ -17,6 +17,7 @@ class Order extends Model
     const CANCELED = 'CANCELED';
 
     protected $fillable = [
+        'id',
         'user_id',
         'store_id',
         'user_name',
@@ -32,6 +33,8 @@ class Order extends Model
         'printed_at',
         'picked_at'
     ];
+
+    public $incrementing = false;
 
     public function extraServices()
     {

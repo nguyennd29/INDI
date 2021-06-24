@@ -24,7 +24,15 @@ class ManageOrder extends React.Component {
 
         if (user?.role === 'store' && store?.id) {
             this.getOrderList(store.id);
+
+            this.interval = setInterval(() => {
+                this.getOrderList(store.id);
+            }, 5000);
         }
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
 
     getOrderList = (storeId) => {

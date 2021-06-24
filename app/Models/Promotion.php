@@ -9,6 +9,10 @@ class Promotion extends Model
 {
     use HasFactory;
 
+    const SERVICE_FEE = 1;
+    const DIRECT_DISCOUNT = 2;
+    const PERCENT_DISCOUNT = 3;
+
     protected $primaryKey = 'code';
     protected $keyType = 'string';
 

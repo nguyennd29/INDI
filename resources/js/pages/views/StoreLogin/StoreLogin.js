@@ -4,7 +4,6 @@ import {Button, Form, Input, notification} from 'antd';
 import './storeLogin.scss'
 import Header from "../../components/Header/Header";
 import axios from "../../../utils/axios";
-import history from "../../components/history";
 
 const layout = {
     labelCol: {span: 8},
@@ -28,7 +27,7 @@ class StoreLogin extends React.Component {
                 if (response?.status === 200) {
                     localStorage.setItem('store', JSON.stringify(response.data.store));
                     openNotification();
-                    history.push('/');
+                    window.location.assign('/store/order');
                 }
                 else {
                     notification.error({

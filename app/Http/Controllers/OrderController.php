@@ -9,9 +9,23 @@ use App\Models\PrintService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
+    public function getOrderById($order_id)
+    {
+        $order = Order::find($order_id);
+        if ($order) {
+            $order->load('extraServices', 'files.printService', 'store');
+
+            return response()->json($order, 200);
+        }
+
+        return response()->json(['error' => 'Lấy thông tin đơn hàng thất bại'], 400);
+
+    }
+
     public function getOrdersByStore($store_id) {
         $orders = Order::with('extraServices', 'files.printService')->where('store_id', $store_id)->get();
 
@@ -35,7 +49,7 @@ class OrderController extends Controller
         $order = Order::find($order_id);
         if ($order && $order->status === 'RECEIVED') {
             $order->status = 'PROCESSING';
-//            $order->processed_at = now();
+            $order->processed_at = now();
             $order->save();
 
             return response()->json($order, 200);
@@ -58,31 +72,78 @@ class OrderController extends Controller
     }
 
     public function pick($order_id) {
-        $order = Order::find($order_id);
-        if ($order && $order->status === 'PRINTED') {
-            $order->status = 'PICKED';
-            $order->picked_at = now();
-            $order->save();
+        try {
+            DB::beginTransaction();
 
-            return response()->json($order, 200);
+            $order = Order::find($order_id);
+            if ($order && $order->status === 'PRINTED') {
+                $order->status = 'PICKED';
+                $order->picked_at = now();
+                $order->save();
+
+                foreach ($order->files as $file) {
+                    if (Storage::disk('public')->exists('/files/'.$file->file_name)){
+                        Storage::disk('public')->delete('/files/'.$file->file_name);
+                        $file->status = File::DELETED;
+                        $file->save();
+                    }
+                }
+
+                DB::commit();
+                return response()->json($order, 200);
+            }
         }
-
-        return response()->json(['error' => 'Action Error'], 400);
+        catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Action Error'], 400);
+        }
     }
 
     public function cancel($order_id) {
-        $order = Order::find($order_id);
-        if ($order) {
-            $order->status = 'CANCELED';
-            $order->canceled_at = now();
-            $order->save();
+        try {
+            DB::beginTransaction();
 
-            return response()->json($order, 200);
+            $order = Order::find($order_id);
+            if ($order) {
+                $order->status = 'CANCELED';
+                $order->canceled_at = now();
+                $order->save();
+
+                foreach ($order->files as $file) {
+                    if (Storage::disk('public')->exists('/files/'.$file->file_name)){
+                        Storage::disk('public')->delete('/files/'.$file->file_name);
+                        $file->status = File::DELETED;
+                        $file->save();
+                    }
+                }
+
+                DB::commit();
+                return response()->json($order, 200);
+            }
         }
+        catch (\Exception $e) {
+            DB::rollBack();
 
-        return response()->json(['error' => 'Action Error'], 400);
+            return response()->json(['error' => 'Action Error'], 400);
+        }
     }
 
+    function generateBarcodeNumber() {
+        $number = mt_rand(10000000, 99999999);
+
+        // call the same function if the barcode exists already
+        if ($this->barcodeNumberExists($number)) {
+            return $this->generateBarcodeNumber();
+        }
+
+        // otherwise, it's valid and can be used
+        return $number;
+    }
+
+    function barcodeNumberExists($number) {
+        // query the database and return a boolean
+        return Order::find($number) != null;
+    }
 
     public function store(Request $request)
     {
@@ -103,8 +164,9 @@ class OrderController extends Controller
                 'user_phone',
                 'code'
             ]);
-
+            $orderData['id'] = $this->generateBarcodeNumber();
             $order = Order::create($orderData);
+
             if ($order) {
                 $due = new Carbon($request->due_at);
 
@@ -145,6 +207,7 @@ class OrderController extends Controller
         catch (\Exception $e) {
             DB::rollBack();
 
+            dd($e);
             return response()->json([
                 'error' => $e,
                 'message' => 'Tạo cửa hàng thất bại'

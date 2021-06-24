@@ -12,9 +12,7 @@ class File extends Model
     use HasFactory;
 
     const UPLOADED = 1;
-    const ORDERED = 2;
-    const PRINTED = 3;
-    const DELETED = 4;
+    const DELETED = 2;
 
     protected $fillable = [
         'order_id',

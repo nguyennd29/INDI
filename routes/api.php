@@ -50,7 +50,7 @@ Route::post('/file/delete','App\Http\Controllers\FileController@delete')->name('
 
 Route::prefix('order')->name('order.')->group(function () {
     Route::post('','App\Http\Controllers\OrderController@store')->name('store');
-    Route::get('{order_id}','App\Http\Controllers\OrderController@index')->name('show');
+    Route::get('{order_id}','App\Http\Controllers\OrderController@getOrderById')->name('show');
     Route::post('update/{order_id}', 'App\Http\Controllers\OrderController@update')->name('update');
     Route::post('cancel/{order_id}', 'App\Http\Controllers\OrderController@cancel')->name('cancel');
     Route::post('receive/{order_id}', 'App\Http\Controllers\OrderController@receive')->name('receive');
@@ -60,4 +60,5 @@ Route::prefix('order')->name('order.')->group(function () {
 
     Route::get('/order-store/{store_id}','App\Http\Controllers\OrderController@getOrdersByStore')->name('get-orders-by-store');
 });
-//Route::post('/order','App\Http\Controllers\OrderController@store')->name('create-order');
+
+Route::get('/promotion/{code}','App\Http\Controllers\PromotionController@getPromotionByCode')->name('get-promotion');

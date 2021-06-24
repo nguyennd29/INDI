@@ -12,9 +12,10 @@ import PrintView from "./views/PrintView/PrintView"
 import StoreRegister from "./views/StoreRegister/StoreRegister";
 import './app.scss'
 import UserLogin from "./views/Auth/UserLogin/UserLogin";
-import history from "./components/history";
+import history from "../utils/history";
 import UserRegister from "./views/Auth/UserRegister/UserRegister";
 import ManageOrder from "./views/ManageOrder/ManageOrder";
+import StatusView from "./views/PrintView/StatusView/StatusView";
 
 export default class App extends Component {
     render() {
@@ -23,6 +24,8 @@ export default class App extends Component {
                 <Switch>
                     <Route path="/print">
                         <PrintView />
+                    </Route>
+                    <Route path="/order/:orderId" component={StatusView}>
                     </Route>
                     <Route path="/store-register">
                         <StoreRegister />

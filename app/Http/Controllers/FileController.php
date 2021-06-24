@@ -20,6 +20,13 @@ class FileController extends Controller
         //
     }
 
+    function count_pdf_pages($pdfname) {
+        $pdftext = file_get_contents($pdfname);
+        $num = preg_match_all("/\/Page\W/", $pdftext, $dummy);
+
+        return $num;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -32,10 +39,9 @@ class FileController extends Controller
             'file' => 'required|mimes:pdf|max:51200'
         ]);
 
-        DB::beginTransaction();
         try {
             $file = $request->file('file');
-            $fileName = time().'_'.$file->getClientOriginalName();
+            $fileName = $file->getClientOriginalName().'_'.time();
 
             $path = Storage::disk('public')->putFileAs(
                 'files', $file, $fileName
@@ -43,13 +49,15 @@ class FileController extends Controller
 
             $url = URL::to('/storage/files/'.$fileName);
 
+            $filePath = public_path('/storage/files/'.$fileName);
+            $page_count = $this->count_pdf_pages($filePath);
+
             $newFile = File::create([
                 'file_name' => $fileName,
                 'url' => $url,
-                'status' => File::UPLOADED
+                'status' => File::UPLOADED,
+                'page_count' => $page_count,
             ]);
-
-            DB::commit();
 
             return response()->json([
                 'file' => $newFile,
@@ -57,8 +65,6 @@ class FileController extends Controller
             ], 200);
         }
         catch (\Exception $e) {
-            DB::rollBack();
-
             return response()->json([
                 'message' => 'Tải lên file thất bại',
             ], 400);
@@ -69,7 +75,7 @@ class FileController extends Controller
     public function delete(Request $request)
     {
         $validated = $request->validate([
-            'fileName' => 'required|max:1000'
+            'fileName' => 'required'
         ]);
 
         if (Storage::disk('public')->exists('/files/'.$request->fileName)){
@@ -108,7 +114,6 @@ class FileController extends Controller
             ], 200);
         }
         catch (\Exception $e) {
-            DB::rollBack();
 
             return response()->json([
                 'message' => 'Tải lên logo thất bại',
