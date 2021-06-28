@@ -46,16 +46,29 @@ const checkDate = (_, value) => {
     const now = new Date();
     const due = new Date(value);
     const timeDiff = (due - now) / 60000;
-    if (timeDiff >= 5) {
+    if (timeDiff >= 15) {
         return Promise.resolve();
     }
 
-    return Promise.reject(new Error('Xin chọn thời gian > 5 phút so với hiện tại'));
+    return Promise.reject(new Error('Xin chọn thời gian > 15 phút so với hiện tại'));
 };
 
 function isVietnamesePhoneNumber(number) {
     return /([\+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/.test(number);
 }
+
+function isValidateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
+const checkMail = (_, value) => {
+    if (isValidateEmail(value)) {
+        return Promise.resolve();
+    }
+
+    return Promise.reject(new Error('Format email không hợp lệ'));
+};
 
 const checkPhone = (_, value) => {
     if (isVietnamesePhoneNumber(value)) {
@@ -79,7 +92,8 @@ const CustomizedForm = (
         totalText,
         finalText,
         getPromoCode,
-        promoText
+        promoText,
+        user
     }) => (
     <Form
         {...layout}
@@ -90,6 +104,11 @@ const CustomizedForm = (
             onChange(allFields);
         }}
         onFinish={onFinish}
+        initialValues={{
+            user_name: user ? user.user_name : null,
+            user_phone: user ? user.phone : null,
+            user_mail: user ? user.email : null
+        }}
     >
         <div className="user-info-container">
             <Form.Item
@@ -111,6 +130,16 @@ const CustomizedForm = (
                 <Input/>
             </Form.Item>
             <Form.Item
+                label="Email"
+                name="user_mail"
+                type="email"
+                rules={[
+                    {validator: checkMail}
+                ]}
+            >
+                <Input/>
+            </Form.Item>
+            <Form.Item
                 label="Thời gian nhận dự kiến"
             >
                 <Form.Item
@@ -126,6 +155,7 @@ const CustomizedForm = (
                         showNow={false}
                         minuteStep={5}
                         disabledDate={disabledDate}
+                        placeholder='Chọn thời gian'
                     />
                 </Form.Item>
                 <div style={{fontStyle: 'italic', color: 'royalblue'}}>{'Nhận tài liệu sau >1h để nhận được nhiều ưu đãi'}</div>
@@ -327,7 +357,7 @@ class UploadFileView extends React.Component {
             }
 
             if (printType === 'slow') {
-                printServices = printServices.filter(item => item.print_type === 'Chậm');
+                printServices = printServices.filter(item => item.print_type === 'Tiết Kiệm');
             }
 
             return printServices.map(item => (
@@ -401,6 +431,8 @@ class UploadFileView extends React.Component {
     onFinish = (values) => {
         const {fields, fileList, promoCode} = this.state;
         const {selectedStore} = this.props;
+        const user = JSON.parse(localStorage.getItem('user'));
+
         let filesData = [];
         for (const [key, value] of Object.entries(values.files)) {
             if (key !== 'file' && key !== 'fileList') {
@@ -416,12 +448,13 @@ class UploadFileView extends React.Component {
 
         values.filesData = filesData;
         values.store_id = selectedStore.storeId;
+        if (user?.id) values.user_id = user.id;
 
         const totalFee = this.calcTotalFee(fields, fileList, selectedStore);
         const discount = this.getDiscount(totalFee);
 
         values.cost = totalFee - discount;
-        if (promoCode?.type !== '-1') values.code = promoCode.code;
+        if (promoCode && promoCode?.type !== '-1') values.code = promoCode.code;
 
         axios.post('/api/order', values)
             .then(function (response) {
@@ -579,7 +612,7 @@ class UploadFileView extends React.Component {
 
         switch (printType) {
             case 'fast':
-                return 5000;
+                return 3000;
             case 'slow':
                 return 2000;
             default:
@@ -597,7 +630,7 @@ class UploadFileView extends React.Component {
             if (timeDiff >= 60) {
                 return 'slow';
             }
-            if (timeDiff > 5) return 'fast';
+            if (timeDiff > 15) return 'fast';
 
             return null;
         }
@@ -652,6 +685,8 @@ class UploadFileView extends React.Component {
             style: 'currency',
             currency: 'VND'
         }).format(totalFee - discount);
+        const user = JSON.parse(localStorage.getItem('user'));
+
         return (
             <div>
                 <div className="page-title">
@@ -675,6 +710,7 @@ class UploadFileView extends React.Component {
                         finalText={finalText}
                         getPromoCode={this.getPromoCode}
                         promoText={promoText}
+                        user={user}
                     />
 
                 </div>

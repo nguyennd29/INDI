@@ -1,6 +1,10 @@
 //.step-component-container {
 //  min-height: 700px;
 //}
+.status-body-container {
+  min-height: calc(100vh - 200px);
+}
+
 .status-view-container{
   width: 800px;
   margin: auto;
@@ -19,7 +23,6 @@
   }
 
   .cancel-button {
-    border-radius: 10px;
   }
 
   .order-status {
@@ -33,22 +36,11 @@
     margin-bottom: 15px;
   }
 
-  .order-info-item {
-    display: flex;
-  }
-
   .order-code {
     display: flex;
   }
 
-  .order-info-item {
-    line-height: 1.75;
-  }
 
-  .order-item-title {
-    margin-right: 5px;
-    width: 100px;
-  }
 
 
   .order-item-title2 {
@@ -59,6 +51,47 @@
   .order-item-main {
     font-weight: 500;
   }
+}
 
+.order-info-item {
+  display: flex;
+  line-height: 1.75;
+}
 
+.order-item-title {
+  margin-right: 5px;
+  width: 100px;
+}
+
+.picked-container {
+  .ant-form-item {
+    margin-bottom: 15px;
+  }
+  .ant-modal-confirm-btns {
+    visibility: hidden !important;;
+    height: 0;
+  }
+
+  .warning-text {
+    margin-top: 40px;
+    margin-left: 50px;
+    margin-bottom: -25px;
+    font-style: italic;
+  }
+
+  .submit-feedback-btn {
+    margin-left: 25%;
+    margin-top: 15px;
+  }
+}
+
+.store-info-text {
+  margin: 10px;
+}
+
+.printed-container, .picked-container {
+  .ant-modal-confirm-title {
+    font-weight: 600;
+    font-size: 20px;
+  }
 }

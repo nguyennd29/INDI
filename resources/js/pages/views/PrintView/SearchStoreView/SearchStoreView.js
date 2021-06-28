@@ -35,7 +35,7 @@ const printColumns = [
         title: 'Đơn giá',
         dataIndex: 'price_per_page',
         key: 'price_per_page',
-        render: text => <a>{text + 'đ/trang'}</a>
+        render: text => <a>{text + 'đ/tờ'}</a>
     },
 ];
 
@@ -97,13 +97,14 @@ class SearchStoreView extends React.Component {
                     imageUrl: store.logo_image,
                     description: store.introduction,
                     print_services: store.print_services,
-                    extra_services: store.extra_services
+                    extra_services: store.extra_services,
+                    rating: store.rating ? store.rating : 0
                 }
             )
         });
 
         const options = optionsData.map(option =>
-            <Option key={option.storeId}>{option.storeName}</Option>
+            <Option key={option.storeId}>{option.storeName + ' - ' + option.address}</Option>
         );
 
         return (
@@ -156,7 +157,7 @@ class SearchStoreView extends React.Component {
                                         </a>
                                     </div>
                                     <div className="store-item-address">{item.address}</div>
-                                    <Rate disabled value={4} />
+                                    <Rate disabled allowHalf defaultValue={Math.round(item.rating*2)/2} />
                                 </div>
                             </div>
                         ))

@@ -16,6 +16,7 @@ import {SyncOutlined} from '@ant-design/icons';
 import './statusView.scss';
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
+import moment from "moment";
 
 const {Panel} = Collapse;
 
@@ -42,12 +43,16 @@ class StatusView extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.createdOrder?.status && this.state.createdOrder?.status !== prevState.createdOrder?.status) {
-            if(this.state.createdOrder?.status === 'PRINTED') {
+            if (this.state.createdOrder?.status === 'PRINTED') {
                 this.onPrinted(this.state.createdOrder);
             }
 
-            if(this.state.createdOrder?.status === 'PICKED') {
+            if (this.state.createdOrder?.status === 'PICKED') {
                 this.onPicked(this.state.createdOrder);
+            }
+
+            if (this.state.createdOrder?.status === 'CANCELED') {
+                this.onCanceled(this.state.createdOrder);
             }
         }
     }
@@ -56,20 +61,69 @@ class StatusView extends React.Component {
         clearInterval(this.interval);
     }
 
+    onCanceled = (order) => {
+        Modal.error({
+            title: 'Đơn hàng đã huỷ',
+            content: this.cancelContent(order),
+            width: 600,
+            className: 'printed-container',
+            onOk: () => window.location.assign('/print')
+        });
+    };
+
+    cancelContent = (order) => {
+        return (
+            <div style={{marginTop: 15}}>
+                <div>Xin lỗi quý khách, cửa hàng không thể tiếp tục thực hiện đơn hàng này.</div>
+                <div>Nếu có thắc mắc, xin liên hệ cửa hàng:</div>
+
+                <div className='store-info-text'>
+                    <div className='order-info-item'>
+                        <div className='order-item-title'>Cửa Hàng:</div>
+                        <div>{order?.store?.store_name}</div>
+                    </div>
+                    <div className='order-info-item'>
+                        <div className='order-item-title'>Địa Chỉ:</div>
+                        <div>{order?.store?.address}</div>
+                    </div>
+                    <div className='order-info-item'>
+                        <div className='order-item-title'>SĐT:</div>
+                        <div>{order?.store?.owner?.phone}</div>
+                    </div>
+                </div>
+            </div>
+        )
+    };
+
     printedContent = (order) => {
         return (
-            <div>Tài liệu đã in xong. Xin hãy đến cửa hàng lấy tài liệu!</div>
+            <div style={{marginTop: 15}}>
+                <div>Xin hãy đến cửa hàng lấy tài liệu!</div>
+                <div className='store-info-text'>
+                    <div className='order-info-item'>
+                        <div className='order-item-title'>Cửa Hàng:</div>
+                        <div>{order?.store?.store_name}</div>
+                    </div>
+                    <div className='order-info-item'>
+                        <div className='order-item-title'>Địa Chỉ:</div>
+                        <div>{order?.store?.address}</div>
+                    </div>
+                    <div className='order-info-item'>
+                        <div className='order-item-title'>SĐT:</div>
+                        <div>{order?.store?.owner?.phone}</div>
+                    </div>
+                </div>
+
+            </div>
         )
     };
 
     onPrinted = (order) => {
-        Modal.confirm({
-            title: 'Tài liệu in hoàn tất',
+        Modal.success({
+            title: 'In tài liệu hoàn tất',
             content: this.printedContent(order),
-            onOk: () => {},
-            onCancel() {},
-            okText: 'OK'
-            // cancelText: 'Huỷ'
+            width: 600,
+            className: 'printed-container',
         });
     };
 
@@ -77,39 +131,47 @@ class StatusView extends React.Component {
         return (
             <Form
                 name="feedback-form"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
+                labelCol={{span: 6}}
+                wrapperCol={{span: 16}}
                 onFinish={this.onFinish}
-                // onFinishFailed={onFinishFailed}
             >
-            <div>Đơn hàng hoàn tất</div>
-            <Form.Item
-                name="rate"
-                label="Rate"
-                rules={[{required: true, message: 'Xin đánh giá dịch vụ'}]}
-            >
-                <Rate />
-            </Form.Item>
-                <div className='note'>
+                <Form.Item
+                    label="Đã thanh toán:"
+                    style={{marginTop: 20, marginBottom: 10}}
+                >
+                    <div style={{fontSize: 22}}>
+                        {new Intl.NumberFormat('de-DE', {
+                            style: 'currency',
+                            currency: 'VND'
+                        }).format(order.cost)}
+                    </div>
+                </Form.Item>
+                <Form.Item
+                    name="rate"
+                    label="Đánh Giá"
+                    rules={[{required: true, message: 'Xin đánh giá dịch vụ'}]}
+                >
+                    <Rate/>
+                </Form.Item>
                     <Form.Item name="feedback" label="Feedback">
                         <Input.TextArea rows={2} placeholder="Xin chia sẻ cảm nhận về dịch vụ"/>
                     </Form.Item>
-                </div>
-                <Button type="primary" htmlType="submit" className="create-order-button">
-                    Test
+                <Button type="primary" htmlType="submit" className="submit-feedback-btn">
+                    Gửi
                 </Button>
+                <div className='warning-text'>Nếu chưa nhận tài liệu, liên hệ cửa hàng: {order?.store?.owner?.phone}</div>
             </Form>
         )
     };
 
     onPicked = (order) => {
-        Modal.confirm({
+        Modal.destroyAll();
+        Modal.success({
             title: 'Đơn hàng hoàn tất',
             content: this.pickedContent(order),
-            onOk: () => {},
-            onCancel() {},
-            okText: 'OK'
-            // cancelText: 'Huỷ'
+            className: 'picked-container',
+            closable: true,
+            width: 600
         });
     };
 
@@ -150,7 +212,7 @@ class StatusView extends React.Component {
         return (
             <span>
                 {"In " + item.print_type + ' ' + item.color_type + ' '
-                + item.page_type + ' ' + item.paper_size + ' - ' + item.price_per_page + 'đ/trang'}
+                + item.page_type + ' ' + item.paper_size + ' - ' + item.price_per_page + 'đ/tờ'}
             </span>
         );
     };
@@ -200,13 +262,17 @@ class StatusView extends React.Component {
         });
     };
 
+    redirectHome = () => {
+        window.location.assign('/');
+    };
+
     onFinish = (values) => {
         values.order_id = this.state.createdOrder?.id;
-        console.log(values);
 
         axios.post('/api/order/feedback', values)
             .then(function (response) {
                 if (response?.status === 200) {
+                    Modal.destroyAll();
                     notification.success({
                         message: 'Gửi feedback thành công!'
                     });
@@ -238,7 +304,6 @@ class StatusView extends React.Component {
                 <Header/>
                 <div>
                     <div className="status-body-container">
-
                         <div className="step-container">
                             <Steps current={2}>
                                 <Step title="Chọn cửa hàng" description={selectedStore?.storeName}/>
@@ -256,7 +321,10 @@ class StatusView extends React.Component {
                                         <Col span={12}>
                                             <div className='order-info-item'>
                                                 <div className='order-item-title2'>Giá dự tính:</div>
-                                                <div>{createdOrder.cost}</div>
+                                                <div>{new Intl.NumberFormat('de-DE', {
+                                                    style: 'currency',
+                                                    currency: 'VND'
+                                                }).format(createdOrder.cost)}</div>
                                             </div>
                                             <div className='order-info-item'>
                                                 <div className='order-item-title2'>Mã KM:</div>
@@ -284,13 +352,13 @@ class StatusView extends React.Component {
                                                 <div className='order-item-title'>Khách Hàng:</div>
                                                 <div>{createdOrder.user_name + ' - ' + createdOrder.user_phone}</div>
                                             </div>
+                                            <div className='order-info-item'>
+                                                <div className='order-item-title'>Note:</div>
+                                                <div>{createdOrder.note}</div>
+                                            </div>
                                         </Col>
                                     </Row>
-
-
                                 </div>
-
-
 
 
                                 <Collapse defaultActiveKey={['1', '2']}
@@ -341,19 +409,45 @@ class StatusView extends React.Component {
                                     </Panel>
                                 </Collapse>
                                 <div className='cancel-button-container'>
-                                    <Button
-                                        danger className='cancel-button'
-                                        // onClick={() => this.onCancel(createdOrder)}>Huỷ đơn hàng
-                                        onClick={() => this.onPicked(createdOrder)}
-                                    >
-                                        huy
-                                    </Button>
+                                    {
+                                        createdOrder?.status === 'PICKED'
+                                        || createdOrder?.status === 'CANCELED'
+                                        ? (
+                                            <div>
+                                                <Button
+                                                    type='primary'
+                                                    className='cancel-button'
+                                                    onClick={() => this.onPicked(createdOrder)}
+                                                    style={{marginRight: 20}}
+                                                >
+                                                    Đánh giá
+                                                </Button>
+                                                <Button
+                                                    type='primary'
+                                                    className='cancel-button'
+                                                    onClick={this.redirectHome}
+                                                >
+                                                    Về trang chủ
+                                                </Button>
+                                            </div>
+                                            ) : (
+                                                <Button
+                                                    danger
+                                                    type='primary'
+                                                    className='cancel-button'
+                                                    onClick={() => this.onCancel(createdOrder)}
+                                                    disabled={!(createdOrder.status === 'CREATED' || createdOrder.status === 'RECEIVED')}
+                                                >
+                                                    Huỷ đơn hàng
+                                                </Button>
+                                            )
+                                    }
                                 </div>
                             </div>
                         </div>
-                        <Footer/>
                     </div>
                 </div>
+                <Footer/>
             </div>
         );
     }

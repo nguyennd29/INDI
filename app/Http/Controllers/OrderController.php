@@ -10,6 +10,7 @@ use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
@@ -28,7 +29,9 @@ class OrderController extends Controller
     }
 
     public function getOrdersByStore($store_id) {
-        $orders = Order::with('extraServices', 'files.printService')->where('store_id', $store_id)->get();
+        $start = new Carbon('first day of last month');
+        $orders = Order::with('extraServices', 'files.printService')->where('store_id', $store_id)
+            ->where('created_at', '>=', $start)->get();
 
         return response()->json($orders, 200);
     }
@@ -65,6 +68,11 @@ class OrderController extends Controller
             $order->status = 'PRINTED';
             $order->printed_at = now();
             $order->save();
+
+            $order->load('store.owner');
+            if ($order->user_mail) {
+                Mail::to($order->user_mail) ->send(new \App\Mail\OrderMail($order));
+            }
 
             return response()->json($order, 200);
         }
@@ -105,7 +113,8 @@ class OrderController extends Controller
             DB::beginTransaction();
 
             $order = Order::find($order_id);
-            if ($order) {
+            if ($order
+                && ($order->status === 'CREATED' ||  $order->status === 'RECEIVED' || $order->status === 'PROCESSING')) {
                 $order->status = 'CANCELED';
                 $order->canceled_at = now();
                 $order->save();
@@ -181,6 +190,7 @@ class OrderController extends Controller
                 'note',
                 'user_name',
                 'user_phone',
+                'user_mail',
                 'code',
                 'cost'
             ]);

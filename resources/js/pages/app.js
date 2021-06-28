@@ -16,6 +16,8 @@ import history from "../utils/history";
 import UserRegister from "./views/Auth/UserRegister/UserRegister";
 import ManageOrder from "./views/ManageOrder/ManageOrder";
 import StatusView from "./views/PrintView/StatusView/StatusView";
+import StoreLogin from "./views/StoreLogin/StoreLogin";
+import SearchOrder from "./views/SearchOrder/SearchOrder";
 
 export default class App extends Component {
     render() {
@@ -27,17 +29,23 @@ export default class App extends Component {
                     </Route>
                     <Route path="/order/:orderId" component={StatusView}>
                     </Route>
-                    <Route path="/store-register">
+                    <Route path="/store/register">
                         <StoreRegister />
                     </Route>
-                    <Route path="/user-login">
+                    <Route path="/store/login">
+                        <StoreLogin />
+                    </Route>
+                    <Route path="/user/login">
                         <UserLogin />
                     </Route>
-                    <Route path="/user-register">
+                    <Route path="/user/register">
                         <UserRegister />
                     </Route>
                     <Route path="/store/order">
                         <ManageOrder />
+                    </Route>
+                    <Route path="/search-order">
+                        <SearchOrder />
                     </Route>
                     <Route path="/">
                         <Landing />

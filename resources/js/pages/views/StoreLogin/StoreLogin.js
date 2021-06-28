@@ -18,6 +18,10 @@ const openNotification = () => {
         message: 'Đăng nhập thành công!',
         className: 'noti'
     });
+
+    setTimeout(function () {
+        window.location.assign('/store/order');
+    }, 500);
 };
 
 class StoreLogin extends React.Component {
@@ -25,9 +29,8 @@ class StoreLogin extends React.Component {
         axios.post('/api/auth/login', values)
             .then(function (response) {
                 if (response?.status === 200) {
-                    localStorage.setItem('store', JSON.stringify(response.data.store));
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
                     openNotification();
-                    window.location.assign('/store/order');
                 }
                 else {
                     notification.error({
@@ -73,7 +76,7 @@ class StoreLogin extends React.Component {
                             </Form.Item>
                             <Form.Item {...tailLayout}>
                                 <div>
-                                    Chưa có tài khoản? <a href="/store-register">Đăng ký ngay!</a>
+                                    Chưa có tài khoản? <a href="/store/register">Đăng ký ngay!</a>
                                 </div>
                             </Form.Item>
 

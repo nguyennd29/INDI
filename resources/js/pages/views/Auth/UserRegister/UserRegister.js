@@ -4,7 +4,7 @@ import {PageHeader, Button, Menu, Form, Input, Upload, Row, Col, Select, notific
 import './userRegister.scss'
 import Header from "../../../components/Header/Header";
 import axios from "../../../../utils/axios";
-
+import isVietnamesePhoneNumber from "../../../../utils/customValidate"
 const {Option} = Select;
 
 const layout = {
@@ -20,6 +20,18 @@ const openNotification = () => {
         message: 'Đăng ký thành công!\nXin vui lòng đăng nhập!',
         className: 'noti'
     });
+
+    setTimeout(function () {
+        window.location.assign('/user/login');
+    }, 1000);
+};
+
+const checkPhone = (_, value) => {
+    if (isVietnamesePhoneNumber(value)) {
+        return Promise.resolve();
+    }
+
+    return Promise.reject(new Error('Format số điện thoại không hợp lệ'));
 };
 
 class UserRegister extends React.Component {
@@ -28,7 +40,6 @@ class UserRegister extends React.Component {
             .then(function (response) {
                 if (response?.status === 200) {
                     openNotification();
-                    window.location.assign('/user-login');
                 }
                 else {
                     notification.error({
@@ -83,7 +94,10 @@ class UserRegister extends React.Component {
                                 label={"Số điện thoại"}
                                 name="phone"
                                 type="tel"
-                                rules={[{required: true, message: 'Xin nhập số điện thoại'}]}
+                                rules={[
+                                    {required: true, message: 'Xin nhập số điện thoại'},
+                                    {validator: checkPhone}
+                                ]}
                             >
                                 <Input/>
                             </Form.Item>

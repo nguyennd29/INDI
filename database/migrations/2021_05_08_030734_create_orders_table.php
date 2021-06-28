@@ -19,6 +19,7 @@ class CreateOrdersTable extends Migration
             $table->string('store_id');
             $table->string('user_name')->nullable();
             $table->string('user_phone')->nullable();
+            $table->string('user_mail')->nullable();
 
             $table->string('note')->nullable();
             $table->integer('rating')->nullable();

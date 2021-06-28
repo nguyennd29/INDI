@@ -70,7 +70,7 @@
   .ant-list {
     padding: 10px;
     border: solid 1px lightgray;
-    height: 100%;
+    min-height: calc(100vh - 520px);
   }
 
   .statistic-card {
@@ -112,8 +112,16 @@
 
 }
 
-.percent {
+.percent-up {
   color: green;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.percent-down {
+  color: red;
   font-size: 20px;
   display: flex;
   justify-content: center;

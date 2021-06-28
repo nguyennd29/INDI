@@ -3,7 +3,9 @@ import {Link} from 'react-router-dom'
 import Header from "../../components/Header/Header";
 import './manageOrder.scss'
 import {Modal, Avatar, Button, Card, Collapse, List, Row, Col, notification} from 'antd';
-import {CaretUpOutlined } from '@ant-design/icons';
+import {CaretUpOutlined, CaretDownOutlined} from '@ant-design/icons';
+import moment from 'moment';
+import Footer from "../../components/Footer/Footer";
 
 const {Panel} = Collapse;
 
@@ -39,9 +41,14 @@ class ManageOrder extends React.Component {
         axios.get(`/api/order/order-store/${storeId}`)
             .then(response => {
                 if (response?.status === 200 && response?.data) {
-                    this.setState({
-                        orderList: response.data
-                    })
+                    if (this.state.orderList !== response.data) {
+                        const data = response.data.filter(order => order?.due_at !== null)
+                            .sort((order1, order2) => moment(order1.due_at).diff(moment(order2.due_at)));
+
+                        this.setState({
+                            orderList: data
+                        })
+                    }
                 }
             })
             .catch(e => console.log(e));
@@ -81,7 +88,8 @@ class ManageOrder extends React.Component {
             title: 'Xác nhận huỷ đơn hàng',
             content: this.cancelContent(order),
             onOk: () => this.handleButtonRequest(order.id, 'cancel'),
-            onCancel() {},
+            onCancel() {
+            },
             okText: 'Xác Nhận',
             cancelText: 'Huỷ'
         });
@@ -92,7 +100,8 @@ class ManageOrder extends React.Component {
             title: 'Xác nhận nhận đơn hàng',
             content: this.renderOrderDetail(order),
             onOk: () => this.handleButtonRequest(order.id, 'receive'),
-            onCancel() {},
+            onCancel() {
+            },
             okText: 'Xác Nhận',
             cancelText: 'Huỷ',
             width: 600
@@ -104,7 +113,8 @@ class ManageOrder extends React.Component {
             title: 'Download File',
             content: this.renderOrderProcess(order),
             onOk: () => this.handleButtonRequest(order.id, 'process'),
-            onCancel() {},
+            onCancel() {
+            },
             okText: 'Xong',
             cancelText: 'Huỷ',
             width: 600
@@ -116,7 +126,8 @@ class ManageOrder extends React.Component {
             title: 'Xác nhận in hoàn tất',
             content: this.renderOrderDetail(order),
             onOk: () => this.handleButtonRequest(order.id, 'printed'),
-            onCancel() {},
+            onCancel() {
+            },
             okText: 'Xác Nhận',
             cancelText: 'Huỷ',
             width: 600
@@ -128,7 +139,8 @@ class ManageOrder extends React.Component {
             title: 'Xác nhận khách nhận hàng',
             content: this.renderOrderDetail(order),
             onOk: () => this.handleButtonRequest(order.id, 'pick'),
-            onCancel() {},
+            onCancel() {
+            },
             okText: 'Xác Nhận',
             cancelText: 'Huỷ',
             width: 600
@@ -163,8 +175,7 @@ class ManageOrder extends React.Component {
                     notification.success({
                         message: renderSuccessMessage(type)
                     });
-                }
-                else {
+                } else {
                     notification.error({
                         message: 'Thao tác thất bại!'
                     });
@@ -180,31 +191,45 @@ class ManageOrder extends React.Component {
     renderTitle = (order, status) => (
         <div className='order-card-title'>
             <nav>Đơn: #{order.id}</nav>
-            <nav>
-                {
-                    status === 'CREATED' ? (
+            {
+                status === 'CREATED' ? (
+                    <nav>
+
                         <Button type="primary" size='small' onClick={() => this.onReceive(order)}>
                             Nhận
                         </Button>
-                    ) : status === 'RECEIVED' ? (
+                        <Button type="primary" size='small' danger onClick={() => this.onCancel(order)}>
+                            Từ chối
+                        </Button>
+                    </nav>
+
+                ) : status === 'RECEIVED' ? (
+                    <nav>
                         <Button type="primary" size='small' onClick={() => this.onProcess(order)}>
                             In
                         </Button>
-                    ) : status === 'PROCESSING' ? (
+                        <Button type="primary" size='small' danger onClick={() => this.onCancel(order)}>
+                            Huỷ
+                        </Button>
+                    </nav>
+
+                ) : status === 'PROCESSING' ? (
+                    <nav>
                         <Button type="primary" size='small' onClick={() => this.onPrinted(order)}>
                             In Xong
                         </Button>
-                    ) : status === 'PRINTED' ? (
+                        <Button type="primary" size='small' danger onClick={() => this.onCancel(order)}>
+                            Huỷ
+                        </Button>
+                    </nav>
+                ) : status === 'PRINTED' ? (
+                    <nav>
                         <Button type="primary" size='small' onClick={() => this.onPick(order)}>
                             Hoàn tất
                         </Button>
-                    ) : null
-                }
-
-                <Button type="primary" size='small' danger onClick={() => this.onCancel(order)}>
-                    Huỷ
-                </Button>
-            </nav>
+                    </nav>
+                ) : null
+            }
 
         </div>
     );
@@ -232,16 +257,36 @@ class ManageOrder extends React.Component {
             style={{marginTop: 30}}
         >
             <div className='order-code' style={{display: 'flex'}}>
-                <div>Khách hàng:</div><div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>{order.user_name + ' - ' + order.user_phone}</div>
+                Khách: <div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>
+                <div>{order.user_name}</div>
+                <div>{order.user_phone}</div>
+            </div>
             </div>
             <div className='order-code' style={{display: 'flex'}}>
-                <div>Hẹn lấy:</div><div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>12:30 Thứ 2, 21/06/2021</div>
+                <div>Hẹn lấy:</div>
+                <div style={{
+                    fontSize: 16,
+                    fontWeight: 600,
+                    marginLeft: 5
+                }}>{moment(order.due_at).locale('vi').format('hh:mm ddd DD-MM-YYYY')}</div>
             </div>
             <div className='order-code' style={{display: 'flex'}}>
-                <div>Tổng:</div> <div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>52.000đ</div>
+                <div>Tổng:</div>
+                <div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>{new Intl.NumberFormat('de-DE', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(order.cost)}</div>
             </div>
-            <Collapse defaultActiveKey={[1]} ghost>
-                <Panel header={order.files.length + ' files - ' + order.files.length + ' bộ - ' + '321 trang'} key="1">
+            <div className='order-code' style={{display: 'flex'}}>
+                <div>Mã KM:</div>
+                <div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>{order.code ? order.code : ''}</div>
+            </div>
+            <div className='order-code' style={{display: 'flex'}}>
+                <div>Note:</div>
+                <div style={{fontSize: 16, marginLeft: 5}}>{order.note ? order.note : ''}</div>
+            </div>
+            <Collapse defaultActiveKey={[]} ghost>
+                <Panel header={order.files.length + ' files - ' + this.countTotalCopy(order) + ' bộ'} key="1">
                     <List
                         itemLayout="horizontal"
                         dataSource={order.files}
@@ -249,10 +294,11 @@ class ManageOrder extends React.Component {
                             <List.Item>
                                 <List.Item.Meta
                                     avatar={<Avatar shape='square' size='large' src="/images/pdf.png"/>}
-                                    title={<a style={{color: '#1890ff'}} href={item.url} target="_blank">{item.file_name}</a>}
+                                    title={<a style={{color: '#1890ff'}} href={item.url}
+                                              target="_blank">{item.file_name}</a>}
                                     description={
                                         <div>
-                                            <div>{item.copy_num + ' bản - 60 trang/bản'}</div>
+                                            <div>{item.copy_num + ' bản - ' + item.page_count + ' trang/bản'}</div>
                                             <div>
                                                 {this.getPrintOption(item.print_service)}
                                             </div>
@@ -293,31 +339,42 @@ class ManageOrder extends React.Component {
             className={this.orderClassName(order.status)}
             style={{marginTop: 30}}
         >
-                    <List
-                        itemLayout="horizontal"
-                        dataSource={order.files}
-                        renderItem={item => (
-                            <List.Item>
-                                <List.Item.Meta
-                                    avatar={<Avatar shape='square' size='large' src="/images/pdf.png"/>}
-                                    title={<div className='order-code' style={{display: 'flex', justifyContent: 'space-between'}}>
-                                        <a style={{color: '#1890ff'}} href={item.url} target="_blank">{item.file_name}</a>
-                                        <a style={{color: '#1890ff'}} href={item.url} target="_blank">Download</a>
-                                    </div>}
-                                    description={
-                                        <div>
-                                            <div>{item.copy_num + ' bản - 60 trang/bản'}</div>
-                                            <div>
-                                                {this.getPrintOption(item.print_service)}
-                                            </div>
-                                        </div>
-                                    }
-                                />
-                            </List.Item>
-                        )}
-                    />
+            <List
+                itemLayout="horizontal"
+                dataSource={order.files}
+                renderItem={item => (
+                    <List.Item>
+                        <List.Item.Meta
+                            avatar={<Avatar shape='square' size='large' src="/images/pdf.png"/>}
+                            title={<div className='order-code'
+                                        style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <a style={{color: '#1890ff'}} href={item.url} target="_blank">{item.file_name}</a>
+                                <a style={{color: '#1890ff'}} href={item.url} target="_blank">Download</a>
+                            </div>}
+                            description={
+                                <div>
+                                    <div>{item.copy_num + ' bản - ' + item.page_count + ' trang/bản'}</div>
+                                    <div>
+                                        {this.getPrintOption(item.print_service)}
+                                    </div>
+                                </div>
+                            }
+                        />
+                    </List.Item>
+                )}
+            />
         </Card>
     );
+
+    countTotalCopy = (order) => {
+        let totalCopy = 0;
+
+        order.files?.forEach(file => {
+            if (file.copy_num) totalCopy += file.copy_num;
+        });
+
+        return totalCopy;
+    };
 
     renderOrder = (order) => (
         <Card
@@ -326,16 +383,36 @@ class ManageOrder extends React.Component {
             className={this.orderClassName(order.status)}
         >
             <div className='order-code' style={{display: 'flex'}}>
-                Khách: <div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}><div>{order.user_name}</div><div>{order.user_phone}</div></div>
+                Khách: <div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>
+                <div>{order.user_name}</div>
+                <div>{order.user_phone}</div>
+            </div>
             </div>
             <div className='order-code' style={{display: 'flex'}}>
-                <div>Hẹn lấy:</div><div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>12:30 Thứ 2, 21/06/2021</div>
+                <div>Hẹn lấy:</div>
+                <div style={{
+                    fontSize: 16,
+                    fontWeight: 600,
+                    marginLeft: 5
+                }}>{moment(order.due_at).locale('vi').format('hh:mm ddd DD-MM-YYYY')}</div>
             </div>
             <div className='order-code' style={{display: 'flex'}}>
-                <div>Tổng:</div> <div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>52.000đ</div>
+                <div>Tổng:</div>
+                <div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>{new Intl.NumberFormat('de-DE', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(order.cost)}</div>
+            </div>
+            <div className='order-code' style={{display: 'flex'}}>
+                <div>Mã KM:</div>
+                <div style={{fontSize: 16, fontWeight: 600, marginLeft: 5}}>{order.code ? order.code : ''}</div>
+            </div>
+            <div className='order-code' style={{display: 'flex'}}>
+                <div>Note:</div>
+                <div style={{fontSize: 16, marginLeft: 5}}>{order.note ? order.note : ''}</div>
             </div>
             <Collapse defaultActiveKey={[]} ghost>
-                <Panel header={order.files.length + ' files - ' + order.files.length + ' bộ - ' + '321 trang'} key="1">
+                <Panel header={order.files.length + ' files - ' + this.countTotalCopy(order) + ' bộ'} key="1">
                     <List
                         itemLayout="horizontal"
                         dataSource={order.files}
@@ -343,11 +420,12 @@ class ManageOrder extends React.Component {
                             <List.Item>
                                 <List.Item.Meta
                                     avatar={<Avatar shape='square' size='large' src="/images/pdf.png"/>}
-                                    title={<a style={{color: '#1890ff'}} href={item.url} target="_blank">{item.file_name}</a>
+                                    title={<a style={{color: '#1890ff'}} href={item.url}
+                                              target="_blank">{item.file_name}</a>
                                     }
                                     description={
                                         <div>
-                                            <div>{item.copy_num + ' bản - 60 trang/bản'}</div>
+                                            <div>{item.copy_num + ' bản - ' + item.page_count + ' trang/bản'}</div>
                                             <div>
                                                 {this.getPrintOption(item.print_service)}
                                             </div>
@@ -359,26 +437,87 @@ class ManageOrder extends React.Component {
                     />
 
                 </Panel>
-                    {
-                        order?.extra_services?.length > 0 ? (
-                            order?.extra_services.map(item => (
-                                <div
-                                    className='extra-service-item'>{'・' + item.service_name}</div>
-                            ))
-                        ) : (
-                            <div className='extra-service-item'>・Dập ghim mặc định</div>
-                        )
-                    }
+                {
+                    order?.extra_services?.length > 0 ? (
+                        order?.extra_services.map(item => (
+                            <div
+                                className='extra-service-item'>{'・' + item.service_name}</div>
+                        ))
+                    ) : (
+                        <div className='extra-service-item'>・Dập ghim mặc định</div>
+                    )
+                }
             </Collapse>
         </Card>
     );
 
+    calcSumValue = (orders) => {
+        let sumValue = 0;
+
+        orders.forEach(order => {
+            sumValue += order?.cost ? order.cost : 0;
+        });
+
+        return sumValue;
+    };
+
+    renderPercent = (percent) => {
+        if (percent >= 0) {
+            return (
+                <div className='percent-up'>
+                    <CaretUpOutlined/>
+                    <div>{percent + '%'}</div>
+                </div>
+            )
+        }
+
+        if (percent < 0) {
+            return (
+                <div className='percent-down'>
+                    <CaretDownOutlined/>
+                    <div>{percent + '%'}</div>
+                </div>
+            )
+        }
+
+        return null;
+    };
+
     render() {
         const {orderList, user} = this.state;
 
-        console.log(orderList, user);
+        const startLastMonth = moment().subtract(1, 'months').startOf('month');
+        const endLastMonth = moment().subtract(1, 'months').endOf('month');
+        const startThisMonth = moment().startOf('month');
 
-        if (user.role === "store") {
+        const startYesterday = moment().subtract(1, 'days').startOf('day');
+        const endYesterday = moment().subtract(1, 'days').endOf('day');
+        const startToday = moment().startOf('day');
+
+        const now = moment();
+
+        const pickedOrders = orderList.filter(order => order.status === 'PICKED');
+        const yesterdayOrders = pickedOrders.filter(order =>
+            moment(order.picked_at).diff(startYesterday) >= 0 && moment(order.picked_at).diff(endYesterday) <= 0);
+        const todayOrders = pickedOrders.filter(order =>
+            moment(order.picked_at).diff(startToday) >= 0 && moment(order.picked_at).diff(now) <= 0);
+        const lastMonthOrders = pickedOrders.filter(order =>
+            moment(order.picked_at).diff(startLastMonth) >= 0 && moment(order.picked_at).diff(endLastMonth) <= 0);
+        const thisMonthOrders = pickedOrders.filter(order =>
+            moment(order.picked_at).diff(startThisMonth) >= 0 && moment(order.picked_at).diff(now) <= 0);
+
+        const sumYesterday = this.calcSumValue(yesterdayOrders);
+        const sumToday = this.calcSumValue(todayOrders);
+        const sumLastMonth = this.calcSumValue(lastMonthOrders);
+        const sumThisMonth = this.calcSumValue(thisMonthOrders);
+
+        const percentTodayOrders = yesterdayOrders?.length ? Math.round((todayOrders.length/yesterdayOrders.length - 1) * 100) : 0;
+        const percentMonthOrders = lastMonthOrders?.length ? Math.round((thisMonthOrders.length/lastMonthOrders.length - 1) * 100) : 0;
+
+        const percentTodayOrdersValue = sumYesterday ? Math.round((sumToday/sumYesterday - 1) * 100) : 0;
+        const percentMonthOrdersValue = sumLastMonth ? Math.round((sumThisMonth/sumLastMonth - 1) * 100) : 0;
+
+        if (user?.role === "store") {
             return (
                 <div>
                     <Header/>
@@ -392,19 +531,17 @@ class ManageOrder extends React.Component {
                                     <Row>
                                         <Col span={12}>
                                             <div style={{fontSize: 25}}>
-                                                30 đơn
+                                                {todayOrders?.length + ' đơn'}
                                             </div>
-                                            <div className='percent'>
-                                                <CaretUpOutlined /> <div>12%</div>
-                                            </div>
+                                            {this.renderPercent(percentTodayOrders)}
                                         </Col>
                                         <Col span={12}>
                                             <div style={{fontSize: 25}}>
-                                                1.250.000đ
-                                            </div>
-                                            <div className='percent'>
-                                                <CaretUpOutlined /> <div>12%</div>
-                                            </div>
+                                                {new Intl.NumberFormat('de-DE', {
+                                                    style: 'currency',
+                                                    currency: 'VND'
+                                                }).format(this.calcSumValue(todayOrders))}                                            </div>
+                                            {this.renderPercent(percentTodayOrdersValue)}
                                         </Col>
                                     </Row>
                                 </Card>
@@ -414,19 +551,18 @@ class ManageOrder extends React.Component {
                                     <Row>
                                         <Col span={12}>
                                             <div style={{fontSize: 25}}>
-                                                120 đơn
+                                                {thisMonthOrders?.length + ' đơn'}
                                             </div>
-                                            <div className='percent'>
-                                                <CaretUpOutlined /> <div>20%</div>
-                                            </div>
+                                            {this.renderPercent(percentMonthOrders)}
                                         </Col>
                                         <Col span={12}>
                                             <div style={{fontSize: 25}}>
-                                                20.250.000đ
+                                                {new Intl.NumberFormat('de-DE', {
+                                                    style: 'currency',
+                                                    currency: 'VND'
+                                                }).format(this.calcSumValue(thisMonthOrders))}
                                             </div>
-                                            <div className='percent'>
-                                                <CaretUpOutlined /> <div>23%</div>
-                                            </div>
+                                            {this.renderPercent(percentMonthOrdersValue)}
                                         </Col>
                                     </Row>
                                 </Card>
@@ -468,6 +604,7 @@ class ManageOrder extends React.Component {
                             </Col>
                         </Row>
                     </div>
+                    {/*<Footer/>*/}
                 </div>
             );
         }

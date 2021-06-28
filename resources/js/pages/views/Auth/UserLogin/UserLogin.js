@@ -74,7 +74,7 @@ class UserLogin extends React.Component {
                             </Form.Item>
                             <Form.Item {...tailLayout}>
                                 <div>
-                                    Chưa có tài khoản? <a href="/user-register">Đăng ký ngay!</a>
+                                    Chưa có tài khoản? <a href="/user/register">Đăng ký ngay!</a>
                                 </div>
                             </Form.Item>
 

@@ -22,6 +22,7 @@ class Order extends Model
         'store_id',
         'user_name',
         'user_phone',
+        'user_mail',
         'note',
         'rating',
         'comment',
@@ -55,5 +56,10 @@ class Order extends Model
     public function promotion()
     {
         return $this->belongsTo(Promotion::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

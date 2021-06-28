@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ExtraService;
+use App\Models\Order;
 use App\Models\PrintService;
 use App\Models\Store;
 use App\Models\User;
@@ -19,6 +20,11 @@ class StoreController extends Controller
     {
         $stores = Store::with(['printServices', 'extraServices', 'owner'])->get();
 
+        foreach ($stores as $store) {
+            $avg_rating = Order::where('store_id', $store->id)->avg('rating');
+
+            $store['rating'] = $avg_rating;
+        }
         return response()->json($stores, 200);
     }
 
@@ -82,13 +88,6 @@ class StoreController extends Controller
 
         }
     }
-
-//    public function storeLogo(Request $request)
-//    {
-//        $path = $request->logo->file->store('avatars');
-//
-//        return $path;
-//    }
 
 //    public function show(Store $store)
 //    {

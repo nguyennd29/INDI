@@ -21,11 +21,27 @@ const elementLayout = {
     wrapperCol: {span: 23}
 };
 
+function isVietnamesePhoneNumber(number) {
+    return /([\+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/.test(number);
+}
+
+const checkPhone = (_, value) => {
+    if (isVietnamesePhoneNumber(value)) {
+        return Promise.resolve();
+    }
+
+    return Promise.reject(new Error('Format số điện thoại không hợp lệ'));
+};
+
 const openNotification = () => {
     notification.success({
         message: 'Đăng ký thành công!',
         className: 'noti'
     });
+
+    setTimeout(function () {
+        window.location.assign('/store/login');
+    }, 1000);
 };
 
 function handleBeforeUpload(file) {
@@ -69,7 +85,6 @@ class StoreRegister extends React.Component {
         axios.post('/api/stores', values)
             .then(function (response) {
                 if (response?.status === 200) {
-                    window.location.assign('/');
                     openNotification();
                 }
                 else {
@@ -97,6 +112,34 @@ class StoreRegister extends React.Component {
         );
         const defaultPrintServices = [
             {
+                print_type: "Tiết Kiệm",
+                color_type: "Đen Trắng",
+                paper_size: "A4",
+                page_type: "2 mặt",
+                price_per_page: null
+            },
+            {
+                print_type: "Tiết Kiệm",
+                color_type: "Đen Trắng",
+                paper_size: "A4",
+                page_type: "1 mặt",
+                price_per_page: null
+            },
+            {
+                print_type: "Tiết Kiệm",
+                color_type: "Màu",
+                paper_size: "A4",
+                page_type: "1 mặt",
+                price_per_page: null
+            },
+            {
+                print_type: "Tiết Kiệm",
+                color_type: "Màu",
+                paper_size: "A4",
+                page_type: "2 mặt",
+                price_per_page: null
+            },
+            {
                 print_type: "Nhanh",
                 color_type: "Đen Trắng",
                 paper_size: "A4",
@@ -124,20 +167,6 @@ class StoreRegister extends React.Component {
                 page_type: "2 mặt",
                 price_per_page: null
             },
-            {
-                print_type: "Chậm",
-                color_type: "Đen Trắng",
-                paper_size: "A4",
-                page_type: "2 mặt",
-                price_per_page: null
-            },
-            {
-                print_type: "Chậm",
-                color_type: "Đen Trắng",
-                paper_size: "A4",
-                page_type: "1 mặt",
-                price_per_page: null
-            }
         ];
 
         const defaultExtraServices = [
@@ -221,7 +250,10 @@ class StoreRegister extends React.Component {
                                 label={"Số điện thoại"}
                                 name="phone"
                                 type="tel"
-                                rules={[{required: true, message: 'Xin nhập số điện thoại'}]}
+                                rules={[
+                                    {required: true, message: 'Xin nhập số điện thoại'},
+                                    {validator: checkPhone}
+                                ]}
                             >
                                 <Input/>
                             </Form.Item>
@@ -260,7 +292,7 @@ class StoreRegister extends React.Component {
                                                     >
                                                         <Select placeholder="Loại dịch vụ">
                                                             <Option value="Nhanh">In Nhanh</Option>
-                                                            <Option value="Chậm">In Tiết Kiệm</Option>
+                                                            <Option value="Tiết Kiệm">In Tiết Kiệm</Option>
                                                         </Select>
                                                     </Form.Item>
                                                 </Col>

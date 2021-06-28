@@ -55,4 +55,5 @@ Route::prefix('order')->name('order.')->group(function () {
     Route::get('/order-store/{store_id}','App\Http\Controllers\OrderController@getOrdersByStore')->name('get-orders-by-store');
 });
 
+Route::post('feedback', 'App\Http\Controllers\FeedbackController@store')->name('feedback');
 Route::get('/promotion/{code}','App\Http\Controllers\PromotionController@getPromotionByCode')->name('get-promotion');
