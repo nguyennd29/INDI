@@ -115,14 +115,14 @@ class StoreRegister extends React.Component {
                 print_type: "Tiết Kiệm",
                 color_type: "Đen Trắng",
                 paper_size: "A4",
-                page_type: "2 mặt",
+                page_type: "1 mặt",
                 price_per_page: null
             },
             {
                 print_type: "Tiết Kiệm",
                 color_type: "Đen Trắng",
                 paper_size: "A4",
-                page_type: "1 mặt",
+                page_type: "2 mặt",
                 price_per_page: null
             },
             {
@@ -143,14 +143,14 @@ class StoreRegister extends React.Component {
                 print_type: "Nhanh",
                 color_type: "Đen Trắng",
                 paper_size: "A4",
-                page_type: "2 mặt",
+                page_type: "1 mặt",
                 price_per_page: null
             },
             {
                 print_type: "Nhanh",
                 color_type: "Đen Trắng",
                 paper_size: "A4",
-                page_type: "1 mặt",
+                page_type: "2 mặt",
                 price_per_page: null
             },
             {

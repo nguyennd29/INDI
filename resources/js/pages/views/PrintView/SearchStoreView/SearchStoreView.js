@@ -190,7 +190,7 @@ class SearchStoreView extends React.Component {
                                         </div>
                                         <div className="store-item-detail-address">{currentStore.address}</div>
                                         <div className="store-item-detail-phone">{'SĐT: ' + currentStore.phone}</div>
-                                        <Rate disabled value={4} />
+                                        <Rate disabled defaultValue={Math.round(item.rating*2)/2}  />
                                         {/*<div className="store-item-detail-introduction">{currentStore.introduction}</div>*/}
 
                                     </div>
