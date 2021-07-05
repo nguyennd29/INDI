@@ -24,6 +24,12 @@ class StoreController extends Controller
             $avg_rating = Order::where('store_id', $store->id)->avg('rating');
 
             $store['rating'] = $avg_rating;
+
+            $orders = $store->orders->filter(function ($value, $key) {
+                return $value->rating != null;
+            });
+
+            $store['feedback_count'] = $orders->count();
         }
         return response()->json($stores, 200);
     }
@@ -89,10 +95,21 @@ class StoreController extends Controller
         }
     }
 
-//    public function show(Store $store)
-//    {
-//        return response()->json($store, 200);
-//    }
+    public function getStoreById($store_id)
+    {
+        $store = Store::find($store_id);
+        if ($store) {
+            $store->load('orders', 'owner');
+
+            $avg_rating = Order::where('store_id', $store->id)->avg('rating');
+
+            $store['rating'] = $avg_rating;
+
+            return response()->json($store, 200);
+        }
+
+        return response()->json(['error' => 'Lấy thông tin cửa hàng thất bại'], 400);
+    }
 
 //    public function update(Request $request, Store $store)
 //    {

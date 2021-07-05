@@ -136,19 +136,18 @@ const CustomizedForm = (
                 rules={[
                     {validator: checkMail}
                 ]}
+                tooltip="Trạng thái đơn hàng sẽ được thông báo qua email này"
             >
                 <Input/>
             </Form.Item>
-            <Form.Item
-                label="Thời gian nhận dự kiến"
-            >
                 <Form.Item
                     name="due_at"
                     rules={[
                         {required: true, message: 'Xin nhập thời gian nhận tài liệu'},
                         {validator: checkDate}
                     ]}
-                    style={{marginBottom: 0}}
+                    label="Thời gian nhận dự kiến"
+                    extra={<div style={{fontStyle: 'italic', color: 'royalblue'}}>{'Nhận tài liệu sau >1h để nhận giá ưu đãi'}</div>}
                 >
                     <DatePicker
                         showTime format="DD-MM-YYYY HH:mm"
@@ -158,9 +157,8 @@ const CustomizedForm = (
                         placeholder='Chọn thời gian'
                     />
                 </Form.Item>
-                <div style={{fontStyle: 'italic', color: 'royalblue'}}>{'Nhận tài liệu sau >1h để nhận được nhiều ưu đãi'}</div>
 
-            </Form.Item>
+            {/*</Form.Item>*/}
         </div>
         <div className="service-container">
             <Form.Item
@@ -228,11 +226,11 @@ const CustomizedForm = (
         </div>
         <div>
             <Form.Item name="code" label="Mã khuyến mãi">
-                {/*<Input style={{width: 100}} />*/}
                 <Search
                     style={{width: 200}}
                     enterButton="Áp dụng"
                     onSearch={(value) => getPromoCode(value)}
+                    placeholder="Nhập mã"
                 />
                 <div>{promoText}</div>
             </Form.Item>

@@ -18,6 +18,7 @@ import ManageOrder from "./views/ManageOrder/ManageOrder";
 import StatusView from "./views/PrintView/StatusView/StatusView";
 import StoreLogin from "./views/StoreLogin/StoreLogin";
 import SearchOrder from "./views/SearchOrder/SearchOrder";
+import StoreRatingView from "./views/StoreRatingView/StoreRatingView";
 
 export default class App extends Component {
     render() {
@@ -28,6 +29,8 @@ export default class App extends Component {
                         <PrintView />
                     </Route>
                     <Route path="/order/:orderId" component={StatusView}>
+                    </Route>
+                    <Route path="/store/rating/:storeId" component={StoreRatingView}>
                     </Route>
                     <Route path="/store/register">
                         <StoreRegister />

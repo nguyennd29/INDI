@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Route;
  Route::prefix('stores')->name('stores.')->group(function () {
      Route::get('', 'App\Http\Controllers\StoreController@index')->name('index');
      Route::post('', 'App\Http\Controllers\StoreController@store')->name('store');
+     Route::get('{store_id}', 'App\Http\Controllers\StoreController@getStoreById')->name('show');
+
 //     Route::get('{store}', 'StoreController@show')->name('show');
 //     Route::post('{store}', 'StoreController@update')->name('update');
 //     Route::post('delete/{store}', 'StoreController@delete')->name('delete');

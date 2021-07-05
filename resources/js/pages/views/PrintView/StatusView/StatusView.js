@@ -12,7 +12,7 @@ import {
     Col, Form, Input,
     Rate
 } from 'antd';
-import {SyncOutlined} from '@ant-design/icons';
+import {CheckCircleOutlined} from '@ant-design/icons';
 import './statusView.scss';
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
@@ -38,7 +38,7 @@ class StatusView extends React.Component {
 
         this.interval = setInterval(() => {
             this.getOrder(orderId);
-        }, 5000);
+        }, 2000);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -134,6 +134,10 @@ class StatusView extends React.Component {
                 labelCol={{span: 6}}
                 wrapperCol={{span: 16}}
                 onFinish={this.onFinish}
+                initialValues={{
+                    rate: order?.rating ? order.rating : null,
+                    feedback: order?.comment ? order.comment : null
+                }}
             >
                 <Form.Item
                     label="Đã thanh toán:"
@@ -151,7 +155,7 @@ class StatusView extends React.Component {
                     label="Đánh Giá"
                     rules={[{required: true, message: 'Xin đánh giá dịch vụ'}]}
                 >
-                    <Rate/>
+                    <Rate />
                 </Form.Item>
                     <Form.Item name="feedback" label="Feedback">
                         <Input.TextArea rows={2} placeholder="Xin chia sẻ cảm nhận về dịch vụ"/>
@@ -179,7 +183,9 @@ class StatusView extends React.Component {
         axios.get(`/api/order/${orderId}`)
             .then(response => {
                 if (response?.status == 200 && response?.data) {
-                    if (this.state.createdOrder?.status !== response.data?.status) {
+                    if (this.state.createdOrder?.status !== response.data?.status
+                        || this.state.createdOrder?.comment !== response.data?.comment
+                        || this.state.createdOrder?.rating !== response.data?.rating) {
                         this.setState({
                             createdOrder: response.data
                         });
@@ -289,6 +295,26 @@ class StatusView extends React.Component {
             });
     };
 
+    isPending = (order) => {
+        if (order?.status === 'PRINTED' || order?.status === 'PICKED' || order?.status === 'CANCELED') {
+            return false;
+        }
+
+        return "Đang xử lý...";
+    };
+    renderTimeline = (order) => {
+        return (
+            <Timeline pending={this.isPending(order)} style={{marginTop: 20}}>
+                {order?.created_at ? (<Timeline.Item>Đã tạo đơn <div className='order-time'>{moment(order.created_at).locale('vi').format('hh:mm DD/MM/YYYY')}</div></Timeline.Item>) : null}
+                {order?.received_at ? (<Timeline.Item>Đơn đã nhận <div className='order-time'>{moment(order.received_at).locale('vi').format('hh:mm DD/MM/YYYY')}</div></Timeline.Item>) : null}
+                {order?.processed_at ? (<Timeline.Item>Đơn bắt đầu in<div className='order-time'>{moment(order.processed_at).locale('vi').format('hh:mm DD/MM/YYYY')}</div></Timeline.Item>) : null}
+                {order?.printed_at ? (<Timeline.Item color='green'>Đơn in xong<div className='order-time'>{moment(order.printed_at).locale('vi').format('hh:mm DD/MM/YYYY')}</div></Timeline.Item>) : null}
+                {order?.picked_at ? (<Timeline.Item color='green'>Khách đã nhận hàng<div className='order-time'>{moment(order.picked_at).locale('vi').format('hh:mm DD/MM/YYYY')}</div></Timeline.Item>) : null}
+                {order?.canceled_at ? (<Timeline.Item color='red'>Đơn hàng đã huỷ<div className='order-time'>{moment(order.canceled_at).locale('vi').format('hh:mm DD/MM/YYYY')}</div></Timeline.Item>) : null}
+
+            </Timeline>
+        )
+    };
 
     render() {
         const {createdOrder} = this.state;
@@ -328,7 +354,7 @@ class StatusView extends React.Component {
                                             </div>
                                             <div className='order-info-item'>
                                                 <div className='order-item-title2'>Mã KM:</div>
-                                                <div>{createdOrder.code}</div>
+                                                <div>{createdOrder.code ? createdOrder.code : 'Không'}</div>
                                             </div>
                                             <div className='order-info-item'>
                                                 <div className='order-item-title2'>Thời gian dự kiến:</div>
@@ -337,6 +363,9 @@ class StatusView extends React.Component {
                                             <div className='order-info-item'>
                                                 <div className='order-item-title2'>Trạng thái:</div>
                                                 <div>{this.renderStatusText(createdOrder.status)}</div>
+                                            </div>
+                                            <div>
+                                                {this.renderTimeline(createdOrder)}
                                             </div>
                                         </Col>
                                         <Col span={12}>
@@ -354,7 +383,7 @@ class StatusView extends React.Component {
                                             </div>
                                             <div className='order-info-item'>
                                                 <div className='order-item-title'>Note:</div>
-                                                <div>{createdOrder.note}</div>
+                                                <div>{createdOrder.note ? createdOrder.note : 'Không'}</div>
                                             </div>
                                         </Col>
                                     </Row>

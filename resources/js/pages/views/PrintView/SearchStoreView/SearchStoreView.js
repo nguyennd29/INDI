@@ -98,7 +98,8 @@ class SearchStoreView extends React.Component {
                     description: store.introduction,
                     print_services: store.print_services,
                     extra_services: store.extra_services,
-                    rating: store.rating ? store.rating : 0
+                    rating: store.rating ? store.rating : 0,
+                    feedback_count: store.feedback_count
                 }
             )
         });
@@ -174,7 +175,6 @@ class SearchStoreView extends React.Component {
                             okText='Chọn'
                             cancelText='Huỷ'
                         >
-
                             <Row>
                                 <Col span={10}>
                                     <img
@@ -190,7 +190,17 @@ class SearchStoreView extends React.Component {
                                         </div>
                                         <div className="store-item-detail-address">{currentStore.address}</div>
                                         <div className="store-item-detail-phone">{'SĐT: ' + currentStore.phone}</div>
-                                        <Rate disabled defaultValue={Math.round(currentStore.rating*2)/2}  />
+                                        <div style={{display: 'flex', alignItems: 'flex-end'}}>
+                                            <Rate disabled allowHalf defaultValue={Math.round(currentStore.rating*2)/2}  />
+                                            <div style={{marginLeft: 10}}>{Number(currentStore.rating).toFixed(1)}/5</div>
+                                        </div>
+                                        {
+                                            currentStore.feedback_count ? (
+                                                <div style={{fontSize: 16, marginTop: 20}}>
+                                                    <a href={'/store/rating/'+currentStore.storeId}>Xem {currentStore.feedback_count} đánh giá</a>
+                                                </div>
+                                            ) : null
+                                        }
                                         {/*<div className="store-item-detail-introduction">{currentStore.introduction}</div>*/}
 
                                     </div>

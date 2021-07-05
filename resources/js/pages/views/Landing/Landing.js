@@ -40,7 +40,7 @@ class Landing extends React.Component {
                             <h2>
                                 <div className="post-title">
                                     <div>Nền tảng</div>
-                                    <div>in ấn trực tuyến</div>
+                                    <div>In ấn trực tuyến</div>
                                     <div>INDI</div>
                                 </div>
 
